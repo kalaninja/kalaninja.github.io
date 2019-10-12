@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>generics | kalan&#39;s blog</title>
+    <link>/tags/generics/</link>
+      <atom:link href="/tags/generics/index.xml" rel="self" type="application/rss+xml" />
+    <description>generics</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2019 Alexander Kalankhodzhaev</copyright><lastBuildDate>Fri, 24 Feb 2017 20:37:00 +0300</lastBuildDate>
+    <image>
+      <url>/img/icon-192.png</url>
+      <title>generics</title>
+      <link>/tags/generics/</link>
+    </image>
+    
+    <item>
+      <title>go-linq v3.0: Emulating generics in Go</title>
+      <link>/post/go-linq-v3-0-emulating-generics-in-go/</link>
+      <pubDate>Fri, 24 Feb 2017 20:37:00 +0300</pubDate>
+      <guid>/post/go-linq-v3-0-emulating-generics-in-go/</guid>
+      <description>&lt;p&gt;About a month ago we welcomed a new developer to our go-linq maintainers team &lt;a href=&#34;https://github.com/cleitonmarx&#34; target=&#34;_blank&#34;&gt;cleitonmarx&lt;/a&gt; (Cleiton Marques) who introduced an interesting pattern for emulating generics in Go and became the main show-maker of the third version of the library. Here is a small story of how the generics behavior was emulated in go-linq.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-problem&#34;&gt;The problem&lt;/h2&gt;
+
+&lt;p&gt;Being one of the most requested features in Go language for years, the question of generics has been discussed up and down and back and forth. For now it seems that they won&amp;rsquo;t appear in the near future. In fact, the language designers aren&amp;rsquo;t against generics, but they have not found or seen a good proposal that allows generics in the language without significantly complicating it. Anyway, we got used to living without generics. This resulted in a slight adjustment to our way of thinking and brought to life tons of elegant solutions. But sometimes there are situations when generics are indispensable. For example, in the go-linq library methods are intended to be used with delegates of any data type, so we made them accept functions of empty interfaces. This interface has no particular behavior, hence objects with any behavior satisfy this interface and the end user of the library is responsible for doing the right type casts. Despite its good performance, this approach isn&amp;rsquo;t use-of-wrong-data-type proof and looks clumsy. Consider the difference:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;From(cars).Where(func(c interface{}) bool {
+    return c.(Car).year &amp;gt;= 2015
+}).Select(func(c interface{}) interface{} {
+    return c.(Car).owner
+})
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;vs&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;From(cars).Where(func(c Car) bool {
+    return c.year &amp;gt;= 2015
+}).Select(func(c Car) string {
+    return c.owner
+})
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and it&amp;rsquo;s getting worse depending on the complexity of your code. So, we introduced a pattern for emulating/improving generics-like methods in our library that uses the reflection mechanism internally and make your code look much easier to read and understand.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-solution&#34;&gt;The solution&lt;/h2&gt;
+
+&lt;p&gt;The idea is to make a new method that wraps around the original one with empty interfaces and does all the casts automatically using reflection. The second part of the solution comes from the fact that the signature to the new method is &lt;code&gt;func (q Query) WhereT(predicateFn interface{}) Query&lt;/code&gt; , so anything can be specified as the argument and we need a way to validate it.&lt;/p&gt;
+
+&lt;p&gt;First, let&amp;rsquo;s define a structure to store all the necessary data:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;type functionCache struct {
+	MethodName string
+	ParamName  string
+	FnValue    reflect.Value
+	FnType     reflect.Type
+	TypesIn    []reflect.Type
+	TypesOut   []reflect.Type
+}
+
+type genericFunc struct {
+	Cache *functionCache
+}
+
+func (g *genericFunc) Call(params ...interface{}) interface{} {
+ paramsIn := make([]reflect.Value, len(params))
+ for i, param := range params {
+ paramsIn[i] = reflect.ValueOf(param)
+ }
+ paramsOut := g.Cache.FnValue.Call(paramsIn)
+ if len(paramsOut) &amp;gt;= 1 {
+ return paramsOut[0].Interface()
+ }
+ return nil
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;MethodName&lt;/code&gt; and &lt;code&gt;ParamName&lt;/code&gt; are used in error handling to form a reasonable message. &lt;code&gt;TypesIn&lt;/code&gt; and &lt;code&gt;TypesOut&lt;/code&gt; store respectively the input and output parameters of the specified function.&lt;/p&gt;
+
+&lt;p&gt;Secondly, we need a factory method for the &amp;lsquo;genericFunc&amp;rsquo;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func newGenericFunc(methodName, paramName string,
+	fn interface{},
+	validateFunc func(*functionCache) error) (*genericFunc, error) {
+
+	cache := &amp;amp;functionCache{}
+	cache.FnValue = reflect.ValueOf(fn)
+
+	if cache.FnValue.Kind() != reflect.Func {
+		return nil,
+			fmt.Errorf(&amp;quot;%s: parameter [%s] is not a function type. It is a &#39;%s&#39;&amp;quot;,
+				methodName, paramName, cache.FnValue.Type())
+	}
+	cache.MethodName = methodName
+	cache.ParamName = paramName
+	cache.FnType = cache.FnValue.Type()
+	numTypesIn := cache.FnType.NumIn()
+	cache.TypesIn = make([]reflect.Type, numTypesIn)
+	for i := 0; i &amp;lt; numTypesIn; i++ {
+		cache.TypesIn[i] = cache.FnType.In(i)
+	}
+
+	numTypesOut := cache.FnType.NumOut()
+	cache.TypesOut = make([]reflect.Type, numTypesOut)
+	for i := 0; i &amp;lt; numTypesOut; i++ {
+		cache.TypesOut[i] = cache.FnType.Out(i)
+	}
+	if err := validateFunc(cache); err != nil {
+		return nil, err
+	}
+
+	return &amp;amp;genericFunc{Cache: cache}, nil
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;it populates the &lt;code&gt;genericFunc&lt;/code&gt; structure and validates it. The validation function must be provided by the user of the method, but we have a helper to produce it:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func simpleParamValidator(In []reflect.Type, Out []reflect.Type) func(cache *functionCache) error {
+	return func(cache *functionCache) error {
+		var isValid = func() bool {
+			if In != nil {
+				if len(In) != len(cache.TypesIn) {
+					return false
+				}
+				for i, paramIn := range In {
+					if paramIn != genericTp &amp;amp;&amp;amp; paramIn != cache.TypesIn[i] {
+						return false
+					}
+				}
+			}
+			if Out != nil {
+				if len(Out) != len(cache.TypesOut) {
+					return false
+				}
+				for i, paramOut := range Out {
+					if paramOut != genericTp &amp;amp;&amp;amp; paramOut != cache.TypesOut[i] {
+						return false
+					}
+				}
+			}
+			return true
+		}
+
+		if !isValid() {
+			return fmt.Errorf(
+				&amp;quot;%s: parameter [%s] has a invalid function signature. Expected: &#39;%s&#39;, actual: &#39;%s&#39;&amp;quot;,
+				cache.MethodName,
+				cache.ParamName,
+				formatFnSignature(In, Out),
+				formatFnSignature(cache.TypesIn, cache.TypesOut))
+		}
+		return nil
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The last thing we need is the wrapper around the original method that does all the magic. For the above-mentioned &lt;code&gt;Where&lt;/code&gt; method it is as simple as:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func (q Query) WhereT(predicateFn interface{}) Query {
+
+	predicateGenericFunc, err := newGenericFunc(
+		&amp;quot;WhereT&amp;quot;, &amp;quot;predicateFn&amp;quot;, predicateFn,
+		simpleParamValidator(newElemTypeSlice(new(genericType)), newElemTypeSlice(new(bool))),
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	predicateFunc := func(item interface{}) bool {
+		return predicateGenericFunc.Call(item).(bool)
+	}
+
+	return q.Where(predicateFunc)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So, you provide a function with your custom types to a new &lt;code&gt;WhereT&lt;/code&gt; method and it produces a wrapper with empty interfaces that will suffice for the original method &lt;code&gt;Where&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-test&#34;&gt;The test&lt;/h2&gt;
+
+&lt;p&gt;If you are writing unit tests on your project and are pursuing a 100% coverage level, as we do in go-linq, then it is not an easy task to achieve with this pattern. After trying several approaches we ended up with writing several tests:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;one for the right case when everything is ok&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;and the second that tests the validation, recovers the panic and checks the error message.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func TestWhereT_PanicWhenPredicateFnIsInvalid(t *testing.T) {
+	mustPanicWithError(
+		t,
+		&amp;quot;WhereT: parameter [predicateFn] has a invalid function signature. Expected: &#39;func(T)bool&#39;, actual: &#39;func(int)int&#39;&amp;quot;,
+		func() {
+			From([]int{1, 1, 1, 2, 1, 2, 3, 4, 2}).WhereT(func(item int) int { return item + 2 })
+		})
+}
+
+func mustPanicWithError(t *testing.T, expectedErr string, f func()) {
+	defer func() {
+		r := recover()
+		err := fmt.Sprintf(&amp;quot;%s&amp;quot;, r)
+		if err != expectedErr {
+			t.Fatalf(&amp;quot;got=[%v] expected=[%v]&amp;quot;, err, expectedErr)
+		}
+	}()
+	f()
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;the-downsides&#34;&gt;The downsides&lt;/h2&gt;
+
+&lt;p&gt;The first and probably the main downside of this solution is the performance penalty. Running the same scenarios that I used in one of the previous articles &lt;a href=&#34;/2016/07/16/manipulating-data-with-iterators-in-go/&#34;&gt;Manipulating data with iterators in Go&lt;/a&gt; we can see that this approach is around 5x-10x slower. That is why we decided to provide users with both versions of the methods leaving the original as is and calling the new ones by the &lt;em&gt;-T&lt;/em&gt; naming convention.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;BenchmarkSelectWhereFirst-4              5000000               352 ns/op
+BenchmarkSelectWhereFirst_generics-4     1000000              2094 ns/op
+BenchmarkSum-4                                50          37427788 ns/op
+BenchmarkSum_generics-4                        3         360509066 ns/op
+BenchmarkZipSkipTake-4                  10000000               224 ns/op
+BenchmarkZipSkipTake_generics-4          1000000              1265 ns/op
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The second issue comes from the signature of the &lt;em&gt;-T method&lt;/em&gt;, as you can see it accepts an empty interface, i.e. &lt;code&gt;predicateFn&lt;/code&gt; can be literally anything.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;decode:true&amp;quot;&amp;gt;func (q Query) WhereT(predicateFn interface{}) Query
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Of course, a user of the method can have problems understanding what &lt;code&gt;predicateFn&lt;/code&gt; should look like, especially if he is new to the library. We conducted a long discussion to deal with the problem and ended up with the idea that the best we can do is to provide really good documentation and examples of each method (thanks &lt;a href=&#34;http://www.cleitonmarques.com/&#34; target=&#34;_blank&#34;&gt;Cleiton&lt;/a&gt; for being so patient and hardworking).&lt;/p&gt;
+
+&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;Do I need generics in Go? Not really, especially with the new &lt;a href=&#34;https://blog.golang.org/generate&#34; target=&#34;_blank&#34;&gt;go:generate&lt;/a&gt; feature. But if you still need them, there is always a way to emulate generic behavior even though it isn&amp;rsquo;t supported by the language, either by using empty interfaces and maintaining good performance, or with the pattern shown above making the code cleaner, more readable and free of type assertions. &lt;strong&gt;Note.&lt;/strong&gt; The full source code is available in &lt;a href=&#34;https://github.com/ahmetalpbalkan/go-linq/blob/master/genericfunc.go&#34; target=&#34;_blank&#34;&gt;genericfunc.go&lt;/a&gt; in our repository. Please, feel free to ask any questions.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

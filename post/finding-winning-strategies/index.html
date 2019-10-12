@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.5.0">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Alexander Kalankhodzhaev">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="This time I want to show how to solve a game using a perfect play which means being able to predict the outcome of the game from any position. The perfect play is the strategy that leads to the best possible outcome for that player regardless of the response by the opponent. For the illustration I have selected two children’s games with stones. The rules are very simple. There is a pile of 99 stones. Two player take n stones out of the pile in turn. The one who takes the last stone is the winner. In each game n is different:
+
+
+it is in the closed interval between 1 and 3
+power of 2
+
+
+Let’s find out how to always win these kind of games.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/finding-winning-strategies/">
+
+  
+
+
+  
+  
+  
+  <meta name="theme-color" content="#3f51b5">
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+        
+      
+    
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css" integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==" crossorigin="anonymous">
+    
+
+    
+
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto:400,400italic,700%7CRoboto+Mono&display=swap">
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.min.986fd6dcc6a9841b1bfe2809c80999ba.css">
+
+  
+
+  
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-80967351-2', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="https://www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+  
+
+  
+
+  <link rel="manifest" href="/index.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon-32.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/finding-winning-strategies/">
+
+  
+  
+  
+  
+    
+    
+  
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="kalan&#39;s blog">
+  <meta property="og:url" content="/post/finding-winning-strategies/">
+  <meta property="og:title" content="Finding winning strategies | kalan&#39;s blog">
+  <meta property="og:description" content="This time I want to show how to solve a game using a perfect play which means being able to predict the outcome of the game from any position. The perfect play is the strategy that leads to the best possible outcome for that player regardless of the response by the opponent. For the illustration I have selected two children’s games with stones. The rules are very simple. There is a pile of 99 stones. Two player take n stones out of the pile in turn. The one who takes the last stone is the winner. In each game n is different:
+
+
+it is in the closed interval between 1 and 3
+power of 2
+
+
+Let’s find out how to always win these kind of games."><meta property="og:image" content="/img/icon-192.png">
+  <meta property="twitter:image" content="/img/icon-192.png"><meta property="og:locale" content="en-us">
+  
+    
+      <meta property="article:published_time" content="2017-05-02T13:15:00&#43;03:00">
+    
+    <meta property="article:modified_time" content="2017-05-02T13:15:00&#43;03:00">
+  
+
+  
+
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "/post/finding-winning-strategies/"
+  },
+  "headline": "Finding winning strategies",
+  
+  "datePublished": "2017-05-02T13:15:00+03:00",
+  "dateModified": "2017-05-02T13:15:00+03:00",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Alexander Kalankhodzhaev"
+  },
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "kalan's blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "/img/icon-512.png"
+    }
+  },
+  "description": "\u003cp\u003eThis time I want to show how to \u003cem\u003esolve a game\u003c/em\u003e using a perfect play which means being able to predict the outcome of the game from any position. The perfect play is the strategy that leads to the best possible outcome for that player regardless of the response by the opponent. For the illustration I have selected two children’s games with stones. The rules are very simple. There is a pile of 99 stones. Two player take \u003cstrong\u003en\u003c/strong\u003e stones out of the pile in turn. The one who takes the last stone is the winner. In each game \u003cstrong\u003en\u003c/strong\u003e is different:\u003c/p\u003e\n\n\u003col\u003e\n\u003cli\u003eit is in the closed interval between 1 and 3\u003c/li\u003e\n\u003cli\u003epower of 2\u003c/li\u003e\n\u003c/ol\u003e\n\n\u003cp\u003eLet’s find out how to always win these kind of games.\u003c/p\u003e"
+}
+</script>
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  <title>Finding winning strategies | kalan&#39;s blog</title>
+
+</head>
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+<nav class="navbar navbar-light fixed-top navbar-expand-lg py-0 compensate-for-scrollbar" id="navbar-main">
+  <div class="container">
+
+    
+      <a class="navbar-brand" href="/">kalan&#39;s blog</a>
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+    
+    <div class="collapse navbar-collapse" id="navbar">
+
+      
+      
+      <ul class="navbar-nav mr-auto">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#about"><span>Home</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#projects"><span>Projects</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#tags"><span>Tags</span></a>
+        </li>
+
+        
+        
+
+      
+      </ul>
+      <ul class="navbar-nav ml-auto">
+      
+
+        
+
+        
+        <li class="nav-item">
+          <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+        </li>
+        
+
+        
+
+        
+        <li class="nav-item">
+          <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+        </li>
+        
+
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+  <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1>Finding winning strategies</h1>
+
+  
+
+  
+    
+
+
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    May 2, 2017
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    8 min read
+  </span>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/finding-winning-strategies/#disqus_thread"></a>
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder mr-1"></i><a href="/categories/algorithms/">Algorithms</a></span>
+  
+
+  
+    
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=/post/finding-winning-strategies/&amp;text=Finding%20winning%20strategies" target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=/post/finding-winning-strategies/&amp;t=Finding%20winning%20strategies" target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Finding%20winning%20strategies&amp;body=/post/finding-winning-strategies/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=/post/finding-winning-strategies/&amp;title=Finding%20winning%20strategies" target="_blank" rel="noopener" class="share-btn-linkedin">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://web.whatsapp.com/send?text=Finding%20winning%20strategies%20/post/finding-winning-strategies/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=/post/finding-winning-strategies/&amp;title=Finding%20winning%20strategies" target="_blank" rel="noopener" class="share-btn-weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      <p>This time I want to show how to <em>solve a game</em> using a perfect play which means being able to predict the outcome of the game from any position. The perfect play is the strategy that leads to the best possible outcome for that player regardless of the response by the opponent. For the illustration I have selected two children’s games with stones. The rules are very simple. There is a pile of 99 stones. Two player take <strong>n</strong> stones out of the pile in turn. The one who takes the last stone is the winner. In each game <strong>n</strong> is different:</p>
+
+<ol>
+<li>it is in the closed interval between 1 and 3</li>
+<li>power of 2</li>
+</ol>
+
+<p>Let’s find out how to always win these kind of games.</p>
+
+<h2 id="problem-identification">Problem identification</h2>
+
+<p>As both games are very similar I will talk about them as a single one. This is a game of two players with only two possible outcomes; either one or the other of the players wins, no draw is possible. So, this is a strictly competitive finite two-person game. As players move in turns and each player at all times is aware of all the events that have previously occurred, this is a game of perfect information. According to Zermelo’s theorem</p>
+
+<blockquote>
+<p>Any finite two-person game of perfect information in which the players move alternatingly and in which chance does not affect the decision making process, if the game cannot end in a draw, then one of the two players must have a winning strategy</p>
+</blockquote>
+
+<h2 id="the-algorithm">The algorithm</h2>
+
+<p>Now that we know the type of problem we are dealing with this leads us to the main question of how to analyze the game. The answer is to model the game, which is to build a tree of all possible decisions made by both players over time. This tree is usually called a <em>game tree</em> whose nodes are positions in a game and whose edges are moves. With this tree it is possible to solve the game using backward induction. Backward induction is an extremely powerful technique that has been applied not just to games but also to many other problems in computer science. It is sometimes known as Zermelo’s algorithm, named after Professor Ernst Zermelo, who used it to analyze the game of chess. The idea is very simple: to traverse the game tree in reverse order from leaves (endgame states) to the root (initial state) each time assuming the current move-making player is choosing what is best for himself. Here is a small example. Let’s assume that we are playing a television game show quiz. There is given a set of possible subjects, e.g. { Algebra, Biology, Chemistry, Drama}. Each participant in turn chooses a subject that he doesn’t want to answer and it disappears from the list. For example, there are 3 players with their own preferences (in descending order):
+<table>
+<thead>
+<tr style="height: 24px;">
+<th style="height: 24px; text-align: center;">Player 1</th>
+<th style="height: 24px; text-align: center;">Player 2</th>
+<th style="height: 24px; text-align: center;">Player 3</th>
+</tr>
+</thead>
+<tbody>
+<tr style="height: 24px;">
+<td style="height: 24px; text-align: center;">A</td>
+<td style="height: 24px; text-align: center;">C</td>
+<td style="height: 24px; text-align: center;">D</td>
+</tr>
+<tr style="height: 19px;">
+<td style="height: 19px; text-align: center;">B</td>
+<td style="height: 19px; text-align: center;">A</td>
+<td style="height: 19px; text-align: center;">B</td>
+</tr>
+<tr style="height: 24px;">
+<td style="height: 24px; text-align: center;">C</td>
+<td style="height: 24px; text-align: center;">B</td>
+<td style="height: 24px; text-align: center;">C</td>
+</tr>
+<tr style="height: 24px;">
+<td style="height: 24px; text-align: center;">D</td>
+<td style="height: 24px; text-align: center;">D</td>
+<td style="height: 24px; text-align: center;">A</td>
+</tr>
+</tbody>
+</table></p>
+
+<h3 id="the-straightforward-way">The straightforward way</h3>
+
+<p>First of all lets try to solve the situation in a straightforward manner. So, <strong>Player 1</strong> is getting rid of subject <strong>D</strong>, <strong>Player 2</strong> – <strong>B</strong> (<strong>D</strong> is already removed), <strong>Player 3</strong> – <strong>A</strong>. The result is – <strong>C</strong> (Chemistry), which is not so good for <strong>Player 1</strong>. Now let’s solve it the other way.</p>
+
+<h3 id="backward-induction">Backward induction</h3>
+
+<p>First we need to build a complete game tree. <a href="./gametree.svg"><img src="./gametree.svg" alt="" /></a> Then, assuming the fact that <strong>Player 3</strong>, who is making the last choice, always chooses what is best for himself, the tree can be reduced to the following <a href="./gametree1.svg"><img src="./gametree1.svg" alt="" /></a> The same assumption for <strong>Player 2</strong> <a href="./gametree2.svg"><img src="./gametree2.svg" alt="" /></a> When the tree is fully reduced we can see that <strong>Player 1</strong> is really choosing only between <strong>B</strong> and <strong>C</strong> and furthermore if he wants to get a better result in the end he has to sacrifice a better option in the beginning.</p>
+
+<h2 id="coding">Coding</h2>
+
+<p>Now back to our problem. Let’s code the backward induction algorithm using java this time. First, we need to store the changing state of the game.</p>
+
+<pre><code class="language-java">import java.util.ArrayList;
+import java.util.List;
+
+public class State {
+    private int stoneCount;
+
+    public State(int stoneCount) {
+        this.stoneCount = stoneCount;
+    }
+
+    public List&lt;State&gt; getNextStates() {
+        List&lt;State&gt; result = new ArrayList&lt;&gt;(3);
+        result.add(new State(stoneCount - 1));
+        result.add(new State(stoneCount - 2));
+        result.add(new State(stoneCount - 3));
+        return result;
+    }
+
+    public int getStoneCount() {
+        return stoneCount;
+    }
+
+    public boolean isTerminated() {
+        return stoneCount &lt;= 3;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(stoneCount);
+    }
+}
+</code></pre>
+
+<p>Then the game tree. Each node contains the current state, boolean field that shows if the current player is able to win in the current state, and the next state that will come after the chosen move.</p>
+
+<pre><code class="language-java">public class Node {
+    private State state;
+    private boolean currentPlayerWins;
+    private Node nextNode;
+
+    public Node(State state) {
+        this.state = state;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public boolean getCurrentPlayerWins() {
+        return currentPlayerWins;
+    }
+
+    public void setCurrentPlayerWins(boolean currentPlayerWins) {
+        this.currentPlayerWins = currentPlayerWins;
+    }
+
+    public void setNextNode(Node nextNode) {
+        this.nextNode = nextNode;
+    }
+
+    @Override
+    public String toString() {
+        String result = String.format(&quot;{%s | %s}&quot;, state, currentPlayerWins);
+
+        if (nextNode != null) {
+            result += String.format(&quot; -&gt; %s&quot;, nextNode);
+        }
+
+        return result;
+    }
+}
+</code></pre>
+
+<p>The last thing that we need is the worker that will build and reduce the game tree. Here we need to do some tricks. First of all don’t try to store the complete tree in memory, because you will need to allocate <strong>56343125079040471808818753</strong> nodes. I bet that you will run out of memory pretty soon. Instead, we might generate only the winning subtrees, because a single winning subnode is enough to treat the previous node as winning. Another thing is that though the amount of nodes is enormous, the amount of possible states is limited to between 1 and 99, and no matter how you get to it either straight from 99 to 96, or following the path 99 -&gt; 98 -&gt; 96, if the current player is able to win from state 96 in the first branch, he wins from this state in the second. So, cache can be used to store results for states that have already been calculated.</p>
+
+<pre><code class="language-java">import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class TreeWorker {
+    private final Map&lt;Integer, Node&gt; cache = new HashMap&lt;&gt;();
+
+    public Node generateTree(State initialState) {
+        Node root = new Node(initialState);
+        generateSubTree(root);
+        return root;
+    }
+
+    private void generateSubTree(Node node) {
+        if (node.getState().isTerminated()) {
+            node.setCurrentPlayerWins(true);
+            return;
+        }
+
+        Node nextNode = null;
+        List&lt;State&gt; states = node.getState().getNextStates();
+        Collections.shuffle(states);
+        for (State state : states) {
+            nextNode = cache.get(state.getStoneCount());
+            if (nextNode == null) {
+                nextNode = new Node(state);
+                generateSubTree(nextNode);
+
+                cache.put(nextNode.getState().getStoneCount(), nextNode);
+            }
+
+            if (!nextNode.getCurrentPlayerWins()) {
+                break;
+            }
+        }
+
+        node.setCurrentPlayerWins(!nextNode.getCurrentPlayerWins());
+        node.setNextNode(nextNode);
+    }
+}
+</code></pre>
+
+<p>For the second game (with powers of 2) we need to slightly modify the <code>State</code> class</p>
+
+<pre><code class="language-java">import java.util.ArrayList;
+import java.util.List;
+
+public class State {
+    private int stoneCount;
+
+    public State(int stoneCount) {
+        this.stoneCount = stoneCount;
+    }
+
+    public List&lt;State&gt; getNextStates() {
+        List&lt;State&gt; result = new ArrayList&lt;&gt;();
+        int cnt = 1;
+        while (cnt &lt;= stoneCount) {
+            result.add(new State(stoneCount - cnt));
+            cnt = cnt &lt;&lt; 1;
+        }
+        return result;
+    }
+
+    public int getStoneCount() {
+        return stoneCount;
+    }
+
+    public boolean isTerminated() {
+        int cnt = 1;
+        while (cnt &lt; stoneCount) {
+            cnt = cnt &lt;&lt; 1;
+        }
+
+        return cnt == stoneCount;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(stoneCount);
+    }
+}
+</code></pre>
+
+<h2 id="the-result">The result</h2>
+
+<p>Now run the code</p>
+
+<pre><code class="language-java">TreeWorker worker = new TreeWorker();
+Node root = worker.generateTree(new State(99));
+
+System.out.println(root);
+</code></pre>
+
+<p>This will give an output similar to this for the first game: <code>{99 | true} -&gt; {96 | false} -&gt; {93 | true} -&gt; {92 | false} -&gt; {91 | true} -&gt; {88 | false} -&gt; {85 | true} -&gt; {84 | false} -&gt; {81 | true} -&gt; {80 | false} -&gt; {77 | true} -&gt; {76 | false} -&gt; {75 | true} -&gt; {72 | false} -&gt; {69 | true} -&gt; {68 | false} -&gt; {67 | true} -&gt; {64 | false} -&gt; {63 | true} -&gt; {60 | false} -&gt; {58 | true} -&gt; {56 | false} -&gt; {55 | true} -&gt; {52 | false} -&gt; {51 | true} -&gt; {48 | false} -&gt; {46 | true} -&gt; {44 | false} -&gt; {42 | true} -&gt; {40 | false} -&gt; {37 | true} -&gt; {36 | false} -&gt; {33 | true} -&gt; {32 | false} -&gt; {30 | true} -&gt; {28 | false} -&gt; {25 | true} -&gt; {24 | false} -&gt; {21 | true} -&gt; {20 | false} -&gt; {18 | true} -&gt; {16 | false} -&gt; {13 | true} -&gt; {12 | false} -&gt; {11 | true} -&gt; {8 | false} -&gt; {7 | true} -&gt; {4 | false} -&gt; {3 | true}</code> So, it seems that the first player has the winning strategy and will win from the initial position if he performs a perfect play. In this case the second player is desperate – having <code>false</code> in each of his moves shows the absence of moves leading to a victory. It is not hard to notice the pattern. Each time the second player takes 1 stone out of the pile, the first takes out 3 stones; for 2 stones – 2 stones; and for 3 stones – 1 stone. So the idea is quite clear – to win one has to keep the number of stones divisible by 4. For the second game the output is somewhat similar to the following: <code>{99 | false} -&gt; {98 | true} -&gt; {66 | false} -&gt; {58 | true} -&gt; {54 | false} -&gt; {46 | true} -&gt; {30 | false} -&gt; {14 | true} -&gt; {6 | false} -&gt; {2 | true}</code> So, here the situation is totally different and the first player cannot win if both sides perform a perfect play. The strategy is to keep the number of stones divisible by 3.</p>
+
+<h2 id="outro">Outro</h2>
+
+<p>Zermelo’s backward induction algorithm is one of the cornerstone algorithms in game theory. It is a classic example of dynamic programming, in which a solution to an overall problem is systematically built up from the solutions to smaller problems. It can be used to analyze different games from tic-tac-toe to chess. So, try it your own!</p>
+    </div>
+
+    
+
+
+    
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tags/algorithm/">algorithm</a>
+  
+  <a class="badge badge-light" href="/tags/backward-induction/">backward induction</a>
+  
+  <a class="badge badge-light" href="/tags/game-theory/">game theory</a>
+  
+  <a class="badge badge-light" href="/tags/java/">java</a>
+  
+  <a class="badge badge-light" href="/tags/zermelos-theorem/">zermelo&#39;s theorem</a>
+  
+</div>
+
+
+
+    
+      
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  
+  
+    
+  
+  
+  <div class="media author-card">
+    
+      
+      <img class="portrait mr-3" src="/authors/admin/avatar_hu0582f41c68c6aa911ecb1f0dbf4a2010_40563_250x250_fill_q90_lanczos_center.jpg" alt="Avatar">
+    
+
+    <div class="media-body">
+      <h5 class="card-title"><a href="/">Alexander Kalankhodzhaev</a></h5>
+      <h6 class="card-subtitle">Blockchain TechLead</h6>
+      
+      <ul class="network-icon" aria-hidden="true">
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a href="https://www.linkedin.com/in/kalaninja/" target="_blank" rel="noopener">
+              <i class="fab fa-linkedin"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a href="https://www.facebook.com/kalaninja" target="_blank" rel="noopener">
+              <i class="fab fa-facebook"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a href="https://github.com/kalaninja" target="_blank" rel="noopener">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a href="https://vk.com/kalan" target="_blank" rel="noopener">
+              <i class="fab fa-vk"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+          <li>
+            <a href="mailto:kalansoft@gmail.com" >
+              <i class="fas fa-envelope"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+
+      
+      
+      <div class="article-widget">
+        <div class="hr-light"></div>
+        <h3>Related</h3>
+        <ul>
+          
+          <li><a href="/post/solving-a-payment-without-change-problem/">Solving a payment without change problem</a></li>
+          
+        </ul>
+      </div>
+      
+    
+
+    
+
+    
+<section id="comments">
+  
+    
+<div id="disqus_thread"></div>
+<script>
+  let disqus_config = function () {
+    
+    
+    
+  };
+  (function() {
+    if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+      document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+      return;
+    }
+    var d = document, s = d.createElement('script'); s.async = true;
+    s.src = 'https://' + "kalan-blog" + '.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+
+  
+</section>
+
+
+
+  </div>
+</article>
+
+      
+
+    
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js" integrity="sha256-aYTdUrn6Ow1DDgh5JTc3aDGnnju48y/1c8s1dgkYPQ8=" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/languages/r.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/languages/go.min.js"></script>
+        
+      
+
+      
+      
+    
+
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js" integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log==" crossorigin="anonymous"></script>
+    
+
+    
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script>
+      const search_index_filename = "/index.json";
+      const i18n = {
+        'placeholder': "Search...",
+        'results': "results found",
+        'no_results': "No results found"
+      };
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+    <script id="dsq-count-scr" src="https://kalan-blog.disqus.com/count.js" async></script>
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.130521ecfc6f534c52c158217bbff718.js"></script>
+
+    
+
+
+
+
+
+
+  
+  <div class="container">
+    <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    &copy; 2019 Alexander Kalankhodzhaev &middot; 
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+    <span class="float-right" aria-hidden="true">
+      <a href="#" id="back_to_top">
+        <span class="button_icon">
+          <i class="fas fa-chevron-up fa-2x"></i>
+        </span>
+      </a>
+    </span>
+    
+  </p>
+</footer>
+
+  </div>
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

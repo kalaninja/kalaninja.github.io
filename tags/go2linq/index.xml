@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>go2linq | kalan&#39;s blog</title>
+    <link>/tags/go2linq/</link>
+      <atom:link href="/tags/go2linq/index.xml" rel="self" type="application/rss+xml" />
+    <description>go2linq</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2019 Alexander Kalankhodzhaev</copyright><lastBuildDate>Sat, 10 Sep 2016 17:22:00 +0300</lastBuildDate>
+    <image>
+      <url>/img/icon-192.png</url>
+      <title>go2linq</title>
+      <link>/tags/go2linq/</link>
+    </image>
+    
+    <item>
+      <title>Announcement: go2linq is now in the go-linq repository</title>
+      <link>/post/announcement-go2linq-is-now-in-the-go-linq-repository/</link>
+      <pubDate>Sat, 10 Sep 2016 17:22:00 +0300</pubDate>
+      <guid>/post/announcement-go2linq-is-now-in-the-go-linq-repository/</guid>
+      <description>&lt;p&gt;I am happy to announce that my &lt;a href=&#34;https://github.com/kalaninja/go2linq&#34; target=&#34;_blank&#34;&gt;go2linq&lt;/a&gt; (a powerful language integrated query (LINQ) library for Go) project has been merged into the &lt;a href=&#34;https://github.com/ahmetalpbalkan/go-linq&#34; target=&#34;_blank&#34;&gt;go-linq&lt;/a&gt;&amp;rsquo;s master branch. Now it is available as the newest version of &lt;a href=&#34;http://ahmetalpbalkan.github.io/go-linq/&#34; target=&#34;_blank&#34;&gt;go-linq&lt;/a&gt; library (v2.0.0).&lt;/p&gt;
+
+&lt;p&gt;All further development will be conducted in the new repository and go2linq will remain only for compatibility reasons. &lt;strong&gt;Please, do not use it anymore!&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;I would like to thank &lt;a href=&#34;https://ahmetalpbalkan.com/&#34; target=&#34;_blank&#34;&gt;Ahmet Alp Balkan&lt;/a&gt; who has made me the maintainer of the go-linq repository and is cooperating in the further development.&lt;/p&gt;
+
+&lt;h2 id=&#34;links&#34;&gt;Links&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;go-linq website: &lt;a href=&#34;http://ahmetalpbalkan.github.io/go-linq/&#34; target=&#34;_blank&#34;&gt;http://ahmetalpbalkan.github.io/go-linq/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;github repository: &lt;a href=&#34;https://github.com/ahmetalpbalkan/go-linq&#34; target=&#34;_blank&#34;&gt;https://github.com/ahmetalpbalkan/go-linq&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;godoc: &lt;a href=&#34;https://godoc.org/github.com/ahmetalpbalkan/go-linq&#34; target=&#34;_blank&#34;&gt;https://godoc.org/github.com/ahmetalpbalkan/go-linq&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>Manipulating Data With Iterators in Go</title>
+      <link>/post/manipulating-data-with-iterators-in-go/</link>
+      <pubDate>Sat, 16 Jul 2016 23:53:00 +0300</pubDate>
+      <guid>/post/manipulating-data-with-iterators-in-go/</guid>
+      <description>&lt;p&gt;Several months ago I started learning Go language and came across an interesting library &lt;a href=&#34;https://github.com/ahmetalpbalkan/go-linq&#34; target=&#34;_blank&#34;&gt;go-linq&lt;/a&gt; which is an implementation of Microsoft’s &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/bb397926.aspx&#34; target=&#34;_blank&#34;&gt;LINQ&lt;/a&gt; technology in Go. And while it is a good library I find its performance to be really weak because of its design. Trying to improve the situation resulted in a complete rewrite using iterators in a lightweight and simple manner.&lt;/p&gt;
+
+&lt;h2 id=&#34;go-linq&#34;&gt;go-linq&lt;/h2&gt;
+
+&lt;p&gt;The key type there is Query:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;type Query struct {
+	values []T
+	err    error
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It stores all the data in its &lt;code&gt;values&lt;/code&gt; field and is a receiver for all the methods defined to manipulate data. Each time a method is executed it generates a new Query with a new &lt;code&gt;values&lt;/code&gt; slice. So, for example, a Where() method can be implemented as simply as:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func (q Query) Where(f func(T) (bool, error)) (r Query) {
+	for _, i := range q.values {
+		ok, err := f(i)
+		if err != nil {
+			r.err = err
+			return r
+		}
+		if ok {
+			r.values = append(r.values, i)
+		}
+	}
+	return
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And although it generally is a good idea, it has poor performance for several reasons. First, each method allocates a new slice, so when you chain methods (as you normally do in linq), like &lt;code&gt;From(slice).Where(wat).Select(dat)&lt;/code&gt; , a lot of slices are created. This results in redundant memory traffic and additional garbage collection. Secondly, since it is a push model, each method manipulates the whole collection, even if there is only a single element needed in the end, e. g.  &lt;code&gt;From(slice).Where(wat).First()&lt;/code&gt; . In this case the &lt;code&gt;wat&lt;/code&gt;  predicate is executed for each element in the slice even if First() takes a single item.&lt;/p&gt;
+
+&lt;h2 id=&#34;iterator-approach&#34;&gt;Iterator approach&lt;/h2&gt;
+
+&lt;p&gt;In order to get rid of the problems shown above, I decided to rewrite the library from scratch using the iterator pattern. Iterator is a design pattern which is used to traverse a container and access the container&amp;rsquo;s elements. It decouples algorithms from containers, which is exactly what is needed to achieve a pull model, so that the predicate in the previous example can be executed only for the elements that are really needed. According to the Gang of Four iterator prescribes the following interface for iteration over a container with elements of type T:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;interface Iterator {
+    void First();    // Restart iteration
+    void Next();     // Advance to next item
+    bool IsDone();   // Are we done yet?
+    T CurrentItem(); // Get current item
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In C# (where LINQ originated) iterator is called an Enumerator and implements the following interface:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cs&#34;&gt;public interface IEnumerator
+{
+    object Current { get; }
+    bool MoveNext();
+    void Reset();
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;But as Go is about simplicity, I wanted my iterators to be as lightweight as possible. So decided to omit the Reset() method (as it is not really needed in LINQ) and benefit from Go&amp;rsquo;s ability to return multiple values. So I ended with the following pattern:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;type Iterator func() (item interface{}, ok bool)
+
+type Query struct {
+    Iterate func() Iterator
+}
+
+next := query.Iterate()
+for item, ok := next(); ok; item, ok = next() {
+    fmt.Println(item)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now it became really simple to work with. Each time next() is called it returns the next element of the container and the boolean value indicating whether this element exists. Now the Where() method mentioned above can be rewritten in this way:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func (q Query) Where(predicate func(interface{}) bool) Query {
+	return Query{
+		Iterate: func() Iterator {
+			next := q.Iterate()
+
+			return func() (item interface{}, ok bool) {
+				for item, ok = next(); ok; item, ok = next() {
+					if predicate(item) {
+						return
+					}
+				}
+
+				return
+			}
+		},
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now Where() doesn&amp;rsquo;t really process anything, instead it generates a new iterator that will manipulate data only when it is iterated.&lt;/p&gt;
+
+&lt;h2 id=&#34;benchmark&#34;&gt;Benchmark&lt;/h2&gt;
+
+&lt;p&gt;Rewriting each method to use iterators instead of slices increased  the performance dramatically. For example, talking about the previously mentioned case  &lt;code&gt;From(slice).Where(wat).First()&lt;/code&gt; the source slice now is scanned only until the first element that satisfies the &lt;code&gt;wat&lt;/code&gt; condition is found. Another good thing is that it allocates no additional memory. Lets make a simple benchmark comparing the iterators approach to go-linq&amp;rsquo;s:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;const (
+	size = 1000000
+)
+
+func BenchmarkSelectWhereFirst(b *testing.B) {
+	for n := 0; n &amp;lt; b.N; n++ {
+		Range(1, size).Select(func(i interface{}) interface{} {
+			return -i.(int)
+		}).Where(func(i interface{}) bool {
+			return i.(int) &amp;gt; -1000
+		}).First()
+	}
+}
+
+func BenchmarkSelectWhereFirst_golinq(b *testing.B) {
+	for n := 0; n &amp;lt; b.N; n++ {
+		golinq.Range(1, size).Select(func(a golinq.T) (golinq.T, error) {
+			return -a.(int), nil
+		}).Where(func(a golinq.T) (bool, error) {
+			return a.(int) &amp;gt; -1000, nil
+		}).First()
+	}
+}
+
+func BenchmarkSum(b *testing.B) {
+	for n := 0; n &amp;lt; b.N; n++ {
+		Range(1, size).Where(func(i interface{}) bool {
+			return i.(int)%2 == 0
+		}).SumInts()
+	}
+}
+
+func BenchmarkSum_golinq(b *testing.B) {
+	for n := 0; n &amp;lt; b.N; n++ {
+		golinq.Range(1, size).Where(func(a golinq.T) (bool, error) {
+			return a.(int)%2 == 0, nil
+		}).Sum()
+	}
+}
+
+func BenchmarkZipSkipTake(b *testing.B) {
+	for n := 0; n &amp;lt; b.N; n++ {
+		Range(1, size).Zip(Range(1, size).Select(func(i interface{}) interface{} {
+			return i.(int) * 2
+		}), func(i, j interface{}) interface{} {
+			return i.(int) + j.(int)
+		}).Skip(2).Take(5)
+	}
+}
+
+func BenchmarkZipSkipTake_golinq(b *testing.B) {
+	for n := 0; n &amp;lt; b.N; n++ {
+		golinq.Range(1, size).Zip(golinq.Range(11, size).Select(func(i golinq.T) (golinq.T, error) {
+			return i.(int) * 2, nil
+		}), func(i, j golinq.T) (golinq.T, error) {
+			return i.(int) + j.(int), nil
+		}).Skip(2).Take(5)
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The result of this benchmark on my machine (MacBookPro8,1 Intel Core i5 2,4 GHz):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;BenchmarkSelectWhereFirst-4          3000000           561 ns/op         224 B/op         10 allocs/op
+BenchmarkSelectWhereFirst_golinq-4         2     555810859 ns/op    120546360 B/op   2000085 allocs/op
+BenchmarkSum-4                            20      73847428 ns/op     8000289 B/op    1000019 allocs/op
+BenchmarkSum_golinq-4                      5     253731714 ns/op    69161392 B/op    1000053 allocs/op
+BenchmarkZipSkipTake-4               5000000           351 ns/op         192 B/op          6 allocs/op
+BenchmarkZipSkipTake_golinq-4              2     672403213 ns/op    144520824 B/op   3000075 allocs/op
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;resume&#34;&gt;Resume&lt;/h2&gt;
+
+&lt;p&gt;As you can see using this technique you can easily implement methods with lazy execution which seriously outperform a more straightforward and immediate execution. I have already implemented all the methods from traditional LINQ. This work can be found in my github repository &lt;a href=&#34;https://github.com/kalaninja/go2linq&#34; target=&#34;_blank&#34;&gt;go2linq&lt;/a&gt;. Feel free to use it, ask for improvements or implement new methods.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

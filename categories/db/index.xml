@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>DB | kalan&#39;s blog</title>
+    <link>/categories/db/</link>
+      <atom:link href="/categories/db/index.xml" rel="self" type="application/rss+xml" />
+    <description>DB</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2019 Alexander Kalankhodzhaev</copyright><lastBuildDate>Sat, 15 Apr 2017 14:17:00 +0300</lastBuildDate>
+    <image>
+      <url>/img/icon-192.png</url>
+      <title>DB</title>
+      <link>/categories/db/</link>
+    </image>
+    
+    <item>
+      <title>Reducing the size of MongoDB document in c#</title>
+      <link>/post/reducing-the-size-of-mongodb-document-in-cs/</link>
+      <pubDate>Sat, 15 Apr 2017 14:17:00 +0300</pubDate>
+      <guid>/post/reducing-the-size-of-mongodb-document-in-cs/</guid>
+      <description>&lt;p&gt;Storing data in MongoDB with the official C# driver sooner or later you might run into the following exception:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;System.IO.FileFormatException: Size 22327168 is larger than MaxDocumentSize 16777216.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is happening because of the limitation of a single document size that exists in MongoDB by design.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;The maximum BSON document size is 16 megabytes. The maximum document size helps ensure that a single document cannot use excessive amount of RAM or, during transmission, excessive amount of bandwidth.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Though there is a JIRA ticket called &lt;a href=&#34;https://jira.mongodb.org/browse/SERVER-5923&#34; target=&#34;_blank&#34;&gt;Increase max document size to at least 64mb&lt;/a&gt;, it doesn’t seem likely to be done in the near future. Geert Bosch, senior software engineer at MongoDB, wrote the following comment:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;In order to support much larger documents, such as the 64Mb documents suggested, assumptions such as that we can easily allocate copies of documents for modification will no longer hold. Transactions could grow extremely large (just think of a 64Mb array of elements to index). We would need to significantly throttle the number of concurrent operations, or raise the memory requirements for mongod.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;But, if you find yourself stuck in such a situation, don’t get frustrated – there is a solution.&lt;/p&gt;
+
+&lt;h2 id=&#34;explore-the-document&#34;&gt;Explore the document&lt;/h2&gt;
+
+&lt;p&gt;MongoDB uses JSON documents in order to store records, but stores them in a binary-encoded format called BSON. Take a look at your document. It might look somewhat similar to this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;{
+  &amp;quot;Property1&amp;quot;: true,
+  &amp;quot;Property2&amp;quot;: 123,
+  &amp;quot;Property3&amp;quot;: &amp;quot;Hello World&amp;quot;,
+  &amp;quot;Property4&amp;quot;: null,
+  &amp;quot;Property5&amp;quot;: null,
+  &amp;quot;Property6&amp;quot;: [
+    1,
+    2,
+    3
+  ],
+  &amp;quot;Property7&amp;quot;: []
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;With an object-oriented representation like .net objects usually store their name and the &lt;code&gt;null&lt;/code&gt; literal for each null property. Also you may notice empty arrays. Another thing that may be tuned is the property name mapping. By default, the names of the fields in the generated JSON document are equal to those of the corresponding properties. So, the solution is to get rid of everything that is possible and shorten the names.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-solution&#34;&gt;The solution&lt;/h2&gt;
+
+&lt;h3 id=&#34;ignoring-null-values&#34;&gt;Ignoring null values&lt;/h3&gt;
+
+&lt;p&gt;To ignore the null values you have at least 3 options:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;decorating properties with BsonIgnoreIfNull attribute&lt;/li&gt;
+&lt;li&gt;using fluent api&lt;/li&gt;
+&lt;li&gt;register a global convention&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The first option lets you mark properties individually:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cs&#34;&gt;public class Class1
+{
+    public bool Property1 { get; set; }
+    public int Property2 { get; set; }
+	[BsonIgnoreIfNull]
+    public string Property3 { get; set; }
+	[BsonIgnoreIfNull]
+    public string Property4 { get; set; }
+	[BsonIgnoreIfNull]
+    public string Property5 { get; set; }
+	[BsonIgnoreIfNull]
+    public List&amp;lt;int&amp;gt; Property6 { get; set; }
+	[BsonIgnoreIfNull]
+    public List&amp;lt;int&amp;gt; Property7 { get; set; }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;But it is better to keep your business entities clean, so consider the second option.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cs&#34;&gt;BsonClassMap.RegisterClassMap&amp;lt;Class1&amp;gt;(x =&amp;gt;
+{
+     x.AutoMap();
+     x.GetMemberMap(m =&amp;gt; m.Property3).SetIgnoreIfNull(true);
+     x.GetMemberMap(m =&amp;gt; m.Property4).SetIgnoreIfNull(true);
+     x.GetMemberMap(m =&amp;gt; m.Property5).SetIgnoreIfNull(true);
+     x.GetMemberMap(m =&amp;gt; m.Property6).SetIgnoreIfNull(true);
+     x.GetMemberMap(m =&amp;gt; m.Property7).SetIgnoreIfNull(true);
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;But still it can add a lot of code, so you might want to introduce a global policy.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cs&#34;&gt;ConventionRegistry.Register(
+	&amp;quot;Ignore null values&amp;quot;,
+	new ConventionPack
+	{
+		new IgnoreIfNullConvention(true)
+	},
+	t =&amp;gt; t == typeof(Class1));
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The last predicate ensures the policy only applies to &lt;code&gt;Class1&lt;/code&gt; class. Also make sure you are registering the new convention pack early enough. If the class has already been mapped it won’t be updated.&lt;/p&gt;
+
+&lt;h3 id=&#34;ignoring-empty-collections&#34;&gt;Ignoring empty collections&lt;/h3&gt;
+
+&lt;p&gt;It is not complicated to do with the &lt;code&gt;SetShouldSerializeMethod&lt;/code&gt;. The specified predicate is triggered to determine whether the member should be serialized. Simply check the number of items inside the collection before saving it. Here is the code&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cs&#34;&gt;BsonClassMap.RegisterClassMap&amp;lt;Class1&amp;gt;(x =&amp;gt;
+{
+     x.AutoMap();
+     x.GetMemberMap(m =&amp;gt; m.Property7).SetShouldSerializeMethod(x =&amp;gt; ((Class1)x).Property7.Count &amp;gt; 0);
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;shortening-names&#34;&gt;Shortening names&lt;/h3&gt;
+
+&lt;p&gt;The last and probably the most efficient way is to make each class property name shorter. Of course it affects your data readability, that is why it is not the first offered solution, but in my case it reduced the document size by two times. As usual you can use an attribute or a fluent approach. The attribute is called &lt;code&gt;BsonElement.&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cs&#34;&gt;public class Class1
+{
+	[BsonElement(&amp;quot;p1&amp;quot;)]
+    public bool Property1 { get; set; }
+	[BsonElement(&amp;quot;p2&amp;quot;)]
+    public int Property2 { get; set; }
+	[BsonElement(&amp;quot;p3&amp;quot;)]
+    public string Property3 { get; set; }	
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The following code can be used with the fluent api&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cs&#34;&gt;BsonClassMap.RegisterClassMap&amp;lt;Class1&amp;gt;(x =&amp;gt;
+{
+     x.AutoMap();
+	 x.GetMemberMap(m =&amp;gt; m.Property4).SetElementName(&amp;quot;p4&amp;quot;);
+	 x.GetMemberMap(m =&amp;gt; m.Property5).SetElementName(&amp;quot;p5&amp;quot;);
+	 x.GetMemberMap(m =&amp;gt; m.Property6).SetElementName(&amp;quot;p6&amp;quot;);
+     x.GetMemberMap(m =&amp;gt; m.Property7).SetElementName(&amp;quot;p7&amp;quot;);
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;result&#34;&gt;Result&lt;/h2&gt;
+
+&lt;p&gt;After applying this solution you might be able to get a document that fits into the MongoDB database. Compared to the original document the result seems to save a lot of space. Consider the resulting JSON&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;{
+  &amp;quot;p1&amp;quot;: true,
+  &amp;quot;p2&amp;quot;: 123,
+  &amp;quot;p3&amp;quot;: &amp;quot;Hello World&amp;quot;,
+  &amp;quot;p6&amp;quot;: [
+    1,
+    2,
+    3
+  ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I think that the difference in size is obvious. Using all three techniques allowed me to store a document that seemed too large in the beginning.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>git | kalan&#39;s blog</title>
+    <link>/tags/git/</link>
+      <atom:link href="/tags/git/index.xml" rel="self" type="application/rss+xml" />
+    <description>git</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2019 Alexander Kalankhodzhaev</copyright><lastBuildDate>Wed, 22 Feb 2017 17:17:55 +0300</lastBuildDate>
+    <image>
+      <url>/img/icon-192.png</url>
+      <title>git</title>
+      <link>/tags/git/</link>
+    </image>
+    
+    <item>
+      <title>How to copy tags from one git repository to another</title>
+      <link>/post/how-to-copy-tags-from-one-git-repository-to-another/</link>
+      <pubDate>Wed, 22 Feb 2017 17:17:55 +0300</pubDate>
+      <guid>/post/how-to-copy-tags-from-one-git-repository-to-another/</guid>
+      <description>&lt;p&gt;Not long ago my team moved a legacy version of our application from a different branch out into a new repository. The problem was that they had forgotten to copy tags there, so we lived without tags for quite a time, until I decided to deal with the problem and made a utility that copies matching tags from one git repository to another.&lt;/p&gt;
+
+&lt;p&gt;Actually, I found a solution on &lt;a href=&#34;https://github.com/foghina/git-copy-tags&#34; target=&#34;_blank&#34;&gt;github&lt;/a&gt; which was a shell script written in ruby. But there were two issues. First, I neither had nor wanted to install ruby on my machine. Secondly, I use Windows on my office laptop. So, I decided to port the original script to Go and here is the code&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;package main
+
+import (
+	&amp;quot;fmt&amp;quot;
+	&amp;quot;log&amp;quot;
+	&amp;quot;os&amp;quot;
+	&amp;quot;os/exec&amp;quot;
+	&amp;quot;runtime&amp;quot;
+	&amp;quot;strings&amp;quot;
+)
+
+func usage() {
+	fmt.Println(&amp;quot;Usage: git-copy-tags &amp;lt;source-repo&amp;gt; &amp;lt;dest-repo&amp;gt; [-f]&amp;quot;)
+	fmt.Println(&amp;quot;By default, the script is in \&amp;quot;dry run\&amp;quot; mode, which means that it only prints out what it would do, without actually doing it. If you are happy with the result, add -f.&amp;quot;)
+	os.Exit(1)
+}
+
+func shell(cmd string) ([]byte, error) {
+	sh := &amp;quot;sh&amp;quot;
+	c := &amp;quot;-c&amp;quot;
+	if runtime.GOOS == &amp;quot;windows&amp;quot; {
+		sh = &amp;quot;cmd&amp;quot;
+		c = &amp;quot;/c&amp;quot;
+	}
+
+	return exec.Command(sh, c, cmd).CombinedOutput()
+}
+
+func exe(cmd string) string {
+	result, err := shell(cmd)
+	if err != nil {
+		log.Fatal(err)
+		os.Exit(1)
+	}
+
+	return string(result)
+}
+
+func getTags() map[string]string {
+	tags := exe(&amp;quot;git tag&amp;quot;)
+	dict := make(map[string]string)
+
+	for _, tag := range strings.Split(tags, &amp;quot;\n&amp;quot;) {
+		tag = strings.TrimSpace(tag)
+		if len(tag) &amp;lt; 1 {
+			continue
+		}
+		cmd := fmt.Sprintf(&amp;quot;git rev-list --max-count=1 %s&amp;quot;, tag)
+		commit := strings.TrimSpace(exe(cmd))
+		dict[tag] = commit
+	}
+
+	return dict
+}
+
+func main() {
+	if len(os.Args) &amp;lt; 3 {
+		usage()
+	}
+
+	src := os.Args[1]
+	dest := os.Args[2]
+	force := false
+	if len(os.Args) &amp;gt; 3 &amp;amp;&amp;amp; os.Args[3] == &amp;quot;-f&amp;quot; {
+		force = true
+	}
+
+	os.Chdir(src)
+	srcTags := getTags()
+
+	os.Chdir(dest)
+	destTags := getTags()
+
+	if !force {
+		fmt.Println(&amp;quot;Running dry, use -f to actually apply changes...&amp;quot;)
+	}
+
+	for tag, commit := range srcTags {
+		if _, ok := destTags[tag]; !ok {
+			cmd := fmt.Sprintf(&amp;quot;git rev-list --max-count=1 %s&amp;quot;, commit)
+			if _, err := shell(cmd); err == nil {
+				if force {
+					if _, err := shell(fmt.Sprintf(&amp;quot;git tag %s %s\n&amp;quot;, tag, commit)); err == nil {
+						fmt.Printf(&amp;quot;Tagged %s with %s&amp;quot;, commit, tag)
+					} else {
+						fmt.Printf(&amp;quot;Error while tagging %s with %s\n&amp;quot;, commit, tag)
+					}
+
+				} else {
+					fmt.Printf(&amp;quot;Would tag %s with %s\n&amp;quot;, commit, tag)
+				}
+			}
+		}
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;usage&#34;&gt;Usage&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;git-copy-tags &amp;lt;source-repo&amp;gt; &amp;lt;dest-repo&amp;gt; \[-f\]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;By default, the script is in &amp;ldquo;dry run&amp;rdquo; mode, which means that it only prints out what it would do, without actually doing it. If you are happy with the result, add -f.&lt;/p&gt;
+
+&lt;p&gt;After running the command with -f, make sure to run &lt;code&gt;git push --tags&lt;/code&gt;  in the destination repository.&lt;/p&gt;
+
+&lt;h2 id=&#34;download&#34;&gt;Download&lt;/h2&gt;
+
+&lt;p&gt;The source code is available in the github &lt;a href=&#34;https://github.com/kalaninja/git-copy-tags&#34; target=&#34;_blank&#34;&gt;repository&lt;/a&gt;. And here is a cross-compiled version for different operating systems (all 64-bit)&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/kalaninja/git-copy-tags/releases/download/release/git-copy-tags.exe&#34; target=&#34;_blank&#34;&gt;Windows&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/kalaninja/git-copy-tags/releases/download/release/darwin.zip&#34; target=&#34;_blank&#34;&gt;MacOSX&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/kalaninja/git-copy-tags/releases/download/release/linux.zip&#34; target=&#34;_blank&#34;&gt;Linux&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;bonus-cross-compilation-in-go&#34;&gt;Bonus. Cross compilation in Go&lt;/h2&gt;
+
+&lt;p&gt;Since Go 1.5 cross compilation is very simple. Just properly set a pair of &lt;code&gt;$GOOS&lt;/code&gt; and &lt;code&gt;$GOARCH&lt;/code&gt; variables and run a build process as usual. For example, on Windows it can be done in the following way:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;set GOARCH=amd64
+set GOOS=linux
+go build
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The actual list is defined in &lt;a href=&#34;https://github.com/golang/go/blob/master/src/go/build/syslist.go&#34; target=&#34;_blank&#34;&gt;src/go/build/syslist.go&lt;/a&gt; and the valid combinations of &lt;code&gt;$GOOS&lt;/code&gt; and &lt;code&gt;$GOARCH&lt;/code&gt; are:&lt;/p&gt;
+
+&lt;table cellpadding=&#34;0&#34;&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;th align=&#34;left&#34; width=&#34;100&#34;&gt;$GOOS&lt;/th&gt;
+&lt;th align=&#34;left&#34; width=&#34;100&#34;&gt;$GOARCH&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;android&lt;/td&gt;
+&lt;td&gt;arm&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;darwin&lt;/td&gt;
+&lt;td&gt;386&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;darwin&lt;/td&gt;
+&lt;td&gt;amd64&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;darwin&lt;/td&gt;
+&lt;td&gt;arm&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;darwin&lt;/td&gt;
+&lt;td&gt;arm64&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;dragonfly&lt;/td&gt;
+&lt;td&gt;amd64&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;freebsd&lt;/td&gt;
+&lt;td&gt;386&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;freebsd&lt;/td&gt;
+&lt;td&gt;amd64&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;freebsd&lt;/td&gt;
+&lt;td&gt;arm&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;linux&lt;/td&gt;
+&lt;td&gt;386&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;linux&lt;/td&gt;
+&lt;td&gt;amd64&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;linux&lt;/td&gt;
+&lt;td&gt;arm&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;linux&lt;/td&gt;
+&lt;td&gt;arm64&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;linux&lt;/td&gt;
+&lt;td&gt;ppc64&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;linux&lt;/td&gt;
+&lt;td&gt;ppc64le&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;linux&lt;/td&gt;
+&lt;td&gt;mips&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;linux&lt;/td&gt;
+&lt;td&gt;mipsle&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;linux&lt;/td&gt;
+&lt;td&gt;mips64&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;linux&lt;/td&gt;
+&lt;td&gt;mips64le&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;netbsd&lt;/td&gt;
+&lt;td&gt;386&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;netbsd&lt;/td&gt;
+&lt;td&gt;amd64&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;netbsd&lt;/td&gt;
+&lt;td&gt;arm&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;openbsd&lt;/td&gt;
+&lt;td&gt;386&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;openbsd&lt;/td&gt;
+&lt;td&gt;amd64&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;openbsd&lt;/td&gt;
+&lt;td&gt;arm&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;plan9&lt;/td&gt;
+&lt;td&gt;386&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;plan9&lt;/td&gt;
+&lt;td&gt;amd64&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;solaris&lt;/td&gt;
+&lt;td&gt;amd64&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;windows&lt;/td&gt;
+&lt;td&gt;386&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;windows&lt;/td&gt;
+&lt;td&gt;amd64&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

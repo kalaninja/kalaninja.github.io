@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>/categories/</loc>
+    <lastmod>2019-10-12T21:14:41+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/categories/go/</loc>
+    <lastmod>2019-10-12T21:14:41+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/go-linq/</loc>
+    <lastmod>2019-10-12T21:14:41+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/project/go-linq/</loc>
+    <lastmod>2019-10-12T21:14:41+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/golang/</loc>
+    <lastmod>2019-10-12T21:14:41+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/</loc>
+    <lastmod>2019-10-12T21:14:41+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/project/</loc>
+    <lastmod>2019-10-12T21:14:41+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <lastmod>2019-10-12T21:14:41+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/algorithm/</loc>
+    <lastmod>2017-05-02T13:15:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/categories/algorithms/</loc>
+    <lastmod>2017-05-02T13:15:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/backward-induction/</loc>
+    <lastmod>2017-05-02T13:15:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/finding-winning-strategies/</loc>
+    <lastmod>2017-05-02T13:15:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/game-theory/</loc>
+    <lastmod>2017-05-02T13:15:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/java/</loc>
+    <lastmod>2017-05-02T13:15:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/</loc>
+    <lastmod>2017-05-02T13:15:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/zermelos-theorem/</loc>
+    <lastmod>2017-05-02T13:15:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/csharp/</loc>
+    <lastmod>2017-04-15T14:17:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/categories/db/</loc>
+    <lastmod>2017-04-15T14:17:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/mongodb/</loc>
+    <lastmod>2017-04-15T14:17:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/reducing-the-size-of-mongodb-document-in-cs/</loc>
+    <lastmod>2017-04-15T14:17:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/generics/</loc>
+    <lastmod>2017-02-24T20:37:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/go-linq-v3-0-emulating-generics-in-go/</loc>
+    <lastmod>2017-02-24T20:37:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/linq/</loc>
+    <lastmod>2017-02-24T20:37:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/categories/git/</loc>
+    <lastmod>2017-02-22T17:17:55+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/git/</loc>
+    <lastmod>2017-02-22T17:17:55+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/how-to-copy-tags-from-one-git-repository-to-another/</loc>
+    <lastmod>2017-02-22T17:17:55+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/announcement-go2linq-is-now-in-the-go-linq-repository/</loc>
+    <lastmod>2016-09-10T17:22:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/go2linq/</loc>
+    <lastmod>2016-09-10T17:22:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/dynamic-programming/</loc>
+    <lastmod>2016-07-30T23:21:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/solving-a-payment-without-change-problem/</loc>
+    <lastmod>2016-07-30T23:21:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/subset-sum-problem/</loc>
+    <lastmod>2016-07-30T23:21:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/tags/iterator/</loc>
+    <lastmod>2016-07-16T23:53:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/post/manipulating-data-with-iterators-in-go/</loc>
+    <lastmod>2016-07-16T23:53:00+03:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/authors/admin/</loc>
+  </url>
+  
+  <url>
+    <loc>/authors/</loc>
+  </url>
+  
+  <url>
+    <loc>/publication_types/</loc>
+  </url>
+  
+  <url>
+    <loc>/publication/</loc>
+  </url>
+  
+  <url>
+    <loc>/talk/</loc>
+  </url>
+  
+</urlset>

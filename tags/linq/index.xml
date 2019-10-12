@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>linq | kalan&#39;s blog</title>
+    <link>/tags/linq/</link>
+      <atom:link href="/tags/linq/index.xml" rel="self" type="application/rss+xml" />
+    <description>linq</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2019 Alexander Kalankhodzhaev</copyright><lastBuildDate>Fri, 24 Feb 2017 20:37:00 +0300</lastBuildDate>
+    <image>
+      <url>/img/icon-192.png</url>
+      <title>linq</title>
+      <link>/tags/linq/</link>
+    </image>
+    
+    <item>
+      <title>go-linq v3.0: Emulating generics in Go</title>
+      <link>/post/go-linq-v3-0-emulating-generics-in-go/</link>
+      <pubDate>Fri, 24 Feb 2017 20:37:00 +0300</pubDate>
+      <guid>/post/go-linq-v3-0-emulating-generics-in-go/</guid>
+      <description>&lt;p&gt;About a month ago we welcomed a new developer to our go-linq maintainers team &lt;a href=&#34;https://github.com/cleitonmarx&#34; target=&#34;_blank&#34;&gt;cleitonmarx&lt;/a&gt; (Cleiton Marques) who introduced an interesting pattern for emulating generics in Go and became the main show-maker of the third version of the library. Here is a small story of how the generics behavior was emulated in go-linq.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-problem&#34;&gt;The problem&lt;/h2&gt;
+
+&lt;p&gt;Being one of the most requested features in Go language for years, the question of generics has been discussed up and down and back and forth. For now it seems that they won&amp;rsquo;t appear in the near future. In fact, the language designers aren&amp;rsquo;t against generics, but they have not found or seen a good proposal that allows generics in the language without significantly complicating it. Anyway, we got used to living without generics. This resulted in a slight adjustment to our way of thinking and brought to life tons of elegant solutions. But sometimes there are situations when generics are indispensable. For example, in the go-linq library methods are intended to be used with delegates of any data type, so we made them accept functions of empty interfaces. This interface has no particular behavior, hence objects with any behavior satisfy this interface and the end user of the library is responsible for doing the right type casts. Despite its good performance, this approach isn&amp;rsquo;t use-of-wrong-data-type proof and looks clumsy. Consider the difference:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;From(cars).Where(func(c interface{}) bool {
+    return c.(Car).year &amp;gt;= 2015
+}).Select(func(c interface{}) interface{} {
+    return c.(Car).owner
+})
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;vs&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;From(cars).Where(func(c Car) bool {
+    return c.year &amp;gt;= 2015
+}).Select(func(c Car) string {
+    return c.owner
+})
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and it&amp;rsquo;s getting worse depending on the complexity of your code. So, we introduced a pattern for emulating/improving generics-like methods in our library that uses the reflection mechanism internally and make your code look much easier to read and understand.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-solution&#34;&gt;The solution&lt;/h2&gt;
+
+&lt;p&gt;The idea is to make a new method that wraps around the original one with empty interfaces and does all the casts automatically using reflection. The second part of the solution comes from the fact that the signature to the new method is &lt;code&gt;func (q Query) WhereT(predicateFn interface{}) Query&lt;/code&gt; , so anything can be specified as the argument and we need a way to validate it.&lt;/p&gt;
+
+&lt;p&gt;First, let&amp;rsquo;s define a structure to store all the necessary data:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;type functionCache struct {
+	MethodName string
+	ParamName  string
+	FnValue    reflect.Value
+	FnType     reflect.Type
+	TypesIn    []reflect.Type
+	TypesOut   []reflect.Type
+}
+
+type genericFunc struct {
+	Cache *functionCache
+}
+
+func (g *genericFunc) Call(params ...interface{}) interface{} {
+ paramsIn := make([]reflect.Value, len(params))
+ for i, param := range params {
+ paramsIn[i] = reflect.ValueOf(param)
+ }
+ paramsOut := g.Cache.FnValue.Call(paramsIn)
+ if len(paramsOut) &amp;gt;= 1 {
+ return paramsOut[0].Interface()
+ }
+ return nil
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;MethodName&lt;/code&gt; and &lt;code&gt;ParamName&lt;/code&gt; are used in error handling to form a reasonable message. &lt;code&gt;TypesIn&lt;/code&gt; and &lt;code&gt;TypesOut&lt;/code&gt; store respectively the input and output parameters of the specified function.&lt;/p&gt;
+
+&lt;p&gt;Secondly, we need a factory method for the &amp;lsquo;genericFunc&amp;rsquo;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func newGenericFunc(methodName, paramName string,
+	fn interface{},
+	validateFunc func(*functionCache) error) (*genericFunc, error) {
+
+	cache := &amp;amp;functionCache{}
+	cache.FnValue = reflect.ValueOf(fn)
+
+	if cache.FnValue.Kind() != reflect.Func {
+		return nil,
+			fmt.Errorf(&amp;quot;%s: parameter [%s] is not a function type. It is a &#39;%s&#39;&amp;quot;,
+				methodName, paramName, cache.FnValue.Type())
+	}
+	cache.MethodName = methodName
+	cache.ParamName = paramName
+	cache.FnType = cache.FnValue.Type()
+	numTypesIn := cache.FnType.NumIn()
+	cache.TypesIn = make([]reflect.Type, numTypesIn)
+	for i := 0; i &amp;lt; numTypesIn; i++ {
+		cache.TypesIn[i] = cache.FnType.In(i)
+	}
+
+	numTypesOut := cache.FnType.NumOut()
+	cache.TypesOut = make([]reflect.Type, numTypesOut)
+	for i := 0; i &amp;lt; numTypesOut; i++ {
+		cache.TypesOut[i] = cache.FnType.Out(i)
+	}
+	if err := validateFunc(cache); err != nil {
+		return nil, err
+	}
+
+	return &amp;amp;genericFunc{Cache: cache}, nil
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;it populates the &lt;code&gt;genericFunc&lt;/code&gt; structure and validates it. The validation function must be provided by the user of the method, but we have a helper to produce it:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func simpleParamValidator(In []reflect.Type, Out []reflect.Type) func(cache *functionCache) error {
+	return func(cache *functionCache) error {
+		var isValid = func() bool {
+			if In != nil {
+				if len(In) != len(cache.TypesIn) {
+					return false
+				}
+				for i, paramIn := range In {
+					if paramIn != genericTp &amp;amp;&amp;amp; paramIn != cache.TypesIn[i] {
+						return false
+					}
+				}
+			}
+			if Out != nil {
+				if len(Out) != len(cache.TypesOut) {
+					return false
+				}
+				for i, paramOut := range Out {
+					if paramOut != genericTp &amp;amp;&amp;amp; paramOut != cache.TypesOut[i] {
+						return false
+					}
+				}
+			}
+			return true
+		}
+
+		if !isValid() {
+			return fmt.Errorf(
+				&amp;quot;%s: parameter [%s] has a invalid function signature. Expected: &#39;%s&#39;, actual: &#39;%s&#39;&amp;quot;,
+				cache.MethodName,
+				cache.ParamName,
+				formatFnSignature(In, Out),
+				formatFnSignature(cache.TypesIn, cache.TypesOut))
+		}
+		return nil
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The last thing we need is the wrapper around the original method that does all the magic. For the above-mentioned &lt;code&gt;Where&lt;/code&gt; method it is as simple as:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func (q Query) WhereT(predicateFn interface{}) Query {
+
+	predicateGenericFunc, err := newGenericFunc(
+		&amp;quot;WhereT&amp;quot;, &amp;quot;predicateFn&amp;quot;, predicateFn,
+		simpleParamValidator(newElemTypeSlice(new(genericType)), newElemTypeSlice(new(bool))),
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	predicateFunc := func(item interface{}) bool {
+		return predicateGenericFunc.Call(item).(bool)
+	}
+
+	return q.Where(predicateFunc)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So, you provide a function with your custom types to a new &lt;code&gt;WhereT&lt;/code&gt; method and it produces a wrapper with empty interfaces that will suffice for the original method &lt;code&gt;Where&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-test&#34;&gt;The test&lt;/h2&gt;
+
+&lt;p&gt;If you are writing unit tests on your project and are pursuing a 100% coverage level, as we do in go-linq, then it is not an easy task to achieve with this pattern. After trying several approaches we ended up with writing several tests:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;one for the right case when everything is ok&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;and the second that tests the validation, recovers the panic and checks the error message.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func TestWhereT_PanicWhenPredicateFnIsInvalid(t *testing.T) {
+	mustPanicWithError(
+		t,
+		&amp;quot;WhereT: parameter [predicateFn] has a invalid function signature. Expected: &#39;func(T)bool&#39;, actual: &#39;func(int)int&#39;&amp;quot;,
+		func() {
+			From([]int{1, 1, 1, 2, 1, 2, 3, 4, 2}).WhereT(func(item int) int { return item + 2 })
+		})
+}
+
+func mustPanicWithError(t *testing.T, expectedErr string, f func()) {
+	defer func() {
+		r := recover()
+		err := fmt.Sprintf(&amp;quot;%s&amp;quot;, r)
+		if err != expectedErr {
+			t.Fatalf(&amp;quot;got=[%v] expected=[%v]&amp;quot;, err, expectedErr)
+		}
+	}()
+	f()
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;the-downsides&#34;&gt;The downsides&lt;/h2&gt;
+
+&lt;p&gt;The first and probably the main downside of this solution is the performance penalty. Running the same scenarios that I used in one of the previous articles &lt;a href=&#34;/2016/07/16/manipulating-data-with-iterators-in-go/&#34;&gt;Manipulating data with iterators in Go&lt;/a&gt; we can see that this approach is around 5x-10x slower. That is why we decided to provide users with both versions of the methods leaving the original as is and calling the new ones by the &lt;em&gt;-T&lt;/em&gt; naming convention.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;BenchmarkSelectWhereFirst-4              5000000               352 ns/op
+BenchmarkSelectWhereFirst_generics-4     1000000              2094 ns/op
+BenchmarkSum-4                                50          37427788 ns/op
+BenchmarkSum_generics-4                        3         360509066 ns/op
+BenchmarkZipSkipTake-4                  10000000               224 ns/op
+BenchmarkZipSkipTake_generics-4          1000000              1265 ns/op
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The second issue comes from the signature of the &lt;em&gt;-T method&lt;/em&gt;, as you can see it accepts an empty interface, i.e. &lt;code&gt;predicateFn&lt;/code&gt; can be literally anything.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;decode:true&amp;quot;&amp;gt;func (q Query) WhereT(predicateFn interface{}) Query
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Of course, a user of the method can have problems understanding what &lt;code&gt;predicateFn&lt;/code&gt; should look like, especially if he is new to the library. We conducted a long discussion to deal with the problem and ended up with the idea that the best we can do is to provide really good documentation and examples of each method (thanks &lt;a href=&#34;http://www.cleitonmarques.com/&#34; target=&#34;_blank&#34;&gt;Cleiton&lt;/a&gt; for being so patient and hardworking).&lt;/p&gt;
+
+&lt;h2 id=&#34;summary&#34;&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;Do I need generics in Go? Not really, especially with the new &lt;a href=&#34;https://blog.golang.org/generate&#34; target=&#34;_blank&#34;&gt;go:generate&lt;/a&gt; feature. But if you still need them, there is always a way to emulate generic behavior even though it isn&amp;rsquo;t supported by the language, either by using empty interfaces and maintaining good performance, or with the pattern shown above making the code cleaner, more readable and free of type assertions. &lt;strong&gt;Note.&lt;/strong&gt; The full source code is available in &lt;a href=&#34;https://github.com/ahmetalpbalkan/go-linq/blob/master/genericfunc.go&#34; target=&#34;_blank&#34;&gt;genericfunc.go&lt;/a&gt; in our repository. Please, feel free to ask any questions.&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Manipulating Data With Iterators in Go</title>
+      <link>/post/manipulating-data-with-iterators-in-go/</link>
+      <pubDate>Sat, 16 Jul 2016 23:53:00 +0300</pubDate>
+      <guid>/post/manipulating-data-with-iterators-in-go/</guid>
+      <description>&lt;p&gt;Several months ago I started learning Go language and came across an interesting library &lt;a href=&#34;https://github.com/ahmetalpbalkan/go-linq&#34; target=&#34;_blank&#34;&gt;go-linq&lt;/a&gt; which is an implementation of Microsoft’s &lt;a href=&#34;http://msdn.microsoft.com/en-us/library/bb397926.aspx&#34; target=&#34;_blank&#34;&gt;LINQ&lt;/a&gt; technology in Go. And while it is a good library I find its performance to be really weak because of its design. Trying to improve the situation resulted in a complete rewrite using iterators in a lightweight and simple manner.&lt;/p&gt;
+
+&lt;h2 id=&#34;go-linq&#34;&gt;go-linq&lt;/h2&gt;
+
+&lt;p&gt;The key type there is Query:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;type Query struct {
+	values []T
+	err    error
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It stores all the data in its &lt;code&gt;values&lt;/code&gt; field and is a receiver for all the methods defined to manipulate data. Each time a method is executed it generates a new Query with a new &lt;code&gt;values&lt;/code&gt; slice. So, for example, a Where() method can be implemented as simply as:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func (q Query) Where(f func(T) (bool, error)) (r Query) {
+	for _, i := range q.values {
+		ok, err := f(i)
+		if err != nil {
+			r.err = err
+			return r
+		}
+		if ok {
+			r.values = append(r.values, i)
+		}
+	}
+	return
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And although it generally is a good idea, it has poor performance for several reasons. First, each method allocates a new slice, so when you chain methods (as you normally do in linq), like &lt;code&gt;From(slice).Where(wat).Select(dat)&lt;/code&gt; , a lot of slices are created. This results in redundant memory traffic and additional garbage collection. Secondly, since it is a push model, each method manipulates the whole collection, even if there is only a single element needed in the end, e. g.  &lt;code&gt;From(slice).Where(wat).First()&lt;/code&gt; . In this case the &lt;code&gt;wat&lt;/code&gt;  predicate is executed for each element in the slice even if First() takes a single item.&lt;/p&gt;
+
+&lt;h2 id=&#34;iterator-approach&#34;&gt;Iterator approach&lt;/h2&gt;
+
+&lt;p&gt;In order to get rid of the problems shown above, I decided to rewrite the library from scratch using the iterator pattern. Iterator is a design pattern which is used to traverse a container and access the container&amp;rsquo;s elements. It decouples algorithms from containers, which is exactly what is needed to achieve a pull model, so that the predicate in the previous example can be executed only for the elements that are really needed. According to the Gang of Four iterator prescribes the following interface for iteration over a container with elements of type T:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;interface Iterator {
+    void First();    // Restart iteration
+    void Next();     // Advance to next item
+    bool IsDone();   // Are we done yet?
+    T CurrentItem(); // Get current item
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In C# (where LINQ originated) iterator is called an Enumerator and implements the following interface:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cs&#34;&gt;public interface IEnumerator
+{
+    object Current { get; }
+    bool MoveNext();
+    void Reset();
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;But as Go is about simplicity, I wanted my iterators to be as lightweight as possible. So decided to omit the Reset() method (as it is not really needed in LINQ) and benefit from Go&amp;rsquo;s ability to return multiple values. So I ended with the following pattern:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;type Iterator func() (item interface{}, ok bool)
+
+type Query struct {
+    Iterate func() Iterator
+}
+
+next := query.Iterate()
+for item, ok := next(); ok; item, ok = next() {
+    fmt.Println(item)
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now it became really simple to work with. Each time next() is called it returns the next element of the container and the boolean value indicating whether this element exists. Now the Where() method mentioned above can be rewritten in this way:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;func (q Query) Where(predicate func(interface{}) bool) Query {
+	return Query{
+		Iterate: func() Iterator {
+			next := q.Iterate()
+
+			return func() (item interface{}, ok bool) {
+				for item, ok = next(); ok; item, ok = next() {
+					if predicate(item) {
+						return
+					}
+				}
+
+				return
+			}
+		},
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now Where() doesn&amp;rsquo;t really process anything, instead it generates a new iterator that will manipulate data only when it is iterated.&lt;/p&gt;
+
+&lt;h2 id=&#34;benchmark&#34;&gt;Benchmark&lt;/h2&gt;
+
+&lt;p&gt;Rewriting each method to use iterators instead of slices increased  the performance dramatically. For example, talking about the previously mentioned case  &lt;code&gt;From(slice).Where(wat).First()&lt;/code&gt; the source slice now is scanned only until the first element that satisfies the &lt;code&gt;wat&lt;/code&gt; condition is found. Another good thing is that it allocates no additional memory. Lets make a simple benchmark comparing the iterators approach to go-linq&amp;rsquo;s:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;const (
+	size = 1000000
+)
+
+func BenchmarkSelectWhereFirst(b *testing.B) {
+	for n := 0; n &amp;lt; b.N; n++ {
+		Range(1, size).Select(func(i interface{}) interface{} {
+			return -i.(int)
+		}).Where(func(i interface{}) bool {
+			return i.(int) &amp;gt; -1000
+		}).First()
+	}
+}
+
+func BenchmarkSelectWhereFirst_golinq(b *testing.B) {
+	for n := 0; n &amp;lt; b.N; n++ {
+		golinq.Range(1, size).Select(func(a golinq.T) (golinq.T, error) {
+			return -a.(int), nil
+		}).Where(func(a golinq.T) (bool, error) {
+			return a.(int) &amp;gt; -1000, nil
+		}).First()
+	}
+}
+
+func BenchmarkSum(b *testing.B) {
+	for n := 0; n &amp;lt; b.N; n++ {
+		Range(1, size).Where(func(i interface{}) bool {
+			return i.(int)%2 == 0
+		}).SumInts()
+	}
+}
+
+func BenchmarkSum_golinq(b *testing.B) {
+	for n := 0; n &amp;lt; b.N; n++ {
+		golinq.Range(1, size).Where(func(a golinq.T) (bool, error) {
+			return a.(int)%2 == 0, nil
+		}).Sum()
+	}
+}
+
+func BenchmarkZipSkipTake(b *testing.B) {
+	for n := 0; n &amp;lt; b.N; n++ {
+		Range(1, size).Zip(Range(1, size).Select(func(i interface{}) interface{} {
+			return i.(int) * 2
+		}), func(i, j interface{}) interface{} {
+			return i.(int) + j.(int)
+		}).Skip(2).Take(5)
+	}
+}
+
+func BenchmarkZipSkipTake_golinq(b *testing.B) {
+	for n := 0; n &amp;lt; b.N; n++ {
+		golinq.Range(1, size).Zip(golinq.Range(11, size).Select(func(i golinq.T) (golinq.T, error) {
+			return i.(int) * 2, nil
+		}), func(i, j golinq.T) (golinq.T, error) {
+			return i.(int) + j.(int), nil
+		}).Skip(2).Take(5)
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The result of this benchmark on my machine (MacBookPro8,1 Intel Core i5 2,4 GHz):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;BenchmarkSelectWhereFirst-4          3000000           561 ns/op         224 B/op         10 allocs/op
+BenchmarkSelectWhereFirst_golinq-4         2     555810859 ns/op    120546360 B/op   2000085 allocs/op
+BenchmarkSum-4                            20      73847428 ns/op     8000289 B/op    1000019 allocs/op
+BenchmarkSum_golinq-4                      5     253731714 ns/op    69161392 B/op    1000053 allocs/op
+BenchmarkZipSkipTake-4               5000000           351 ns/op         192 B/op          6 allocs/op
+BenchmarkZipSkipTake_golinq-4              2     672403213 ns/op    144520824 B/op   3000075 allocs/op
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;resume&#34;&gt;Resume&lt;/h2&gt;
+
+&lt;p&gt;As you can see using this technique you can easily implement methods with lazy execution which seriously outperform a more straightforward and immediate execution. I have already implemented all the methods from traditional LINQ. This work can be found in my github repository &lt;a href=&#34;https://github.com/kalaninja/go2linq&#34; target=&#34;_blank&#34;&gt;go2linq&lt;/a&gt;. Feel free to use it, ask for improvements or implement new methods.&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
