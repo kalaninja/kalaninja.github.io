@@ -5,9 +5,9 @@
     <link>/tags/git/</link>
       <atom:link href="/tags/git/index.xml" rel="self" type="application/rss+xml" />
     <description>git</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2019 Alexander Kalankhodzhaev</copyright><lastBuildDate>Wed, 22 Feb 2017 17:17:55 +0300</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2020 Alexander Kalankhodzhaev</copyright><lastBuildDate>Wed, 22 Feb 2017 17:17:55 +0300</lastBuildDate>
     <image>
-      <url>/img/icon-192.png</url>
+      <url>/images/icon_hu45eb22dba3a74074a63777c2344b71bd_547989_512x512_fill_lanczos_center_2.png</url>
       <title>git</title>
       <link>/tags/git/</link>
     </image>
@@ -18,9 +18,8 @@
       <pubDate>Wed, 22 Feb 2017 17:17:55 +0300</pubDate>
       <guid>/post/how-to-copy-tags-from-one-git-repository-to-another/</guid>
       <description>&lt;p&gt;Not long ago my team moved a legacy version of our application from a different branch out into a new repository. The problem was that they had forgotten to copy tags there, so we lived without tags for quite a time, until I decided to deal with the problem and made a utility that copies matching tags from one git repository to another.&lt;/p&gt;
-
-&lt;p&gt;Actually, I found a solution on &lt;a href=&#34;https://github.com/foghina/git-copy-tags&#34; target=&#34;_blank&#34;&gt;github&lt;/a&gt; which was a shell script written in ruby. But there were two issues. First, I neither had nor wanted to install ruby on my machine. Secondly, I use Windows on my office laptop. So, I decided to port the original script to Go and here is the code&lt;/p&gt;
-
+&lt;p&gt;Actually, I found a solution on 
+&lt;a href=&#34;https://github.com/foghina/git-copy-tags&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;github&lt;/a&gt; which was a shell script written in ruby. But there were two issues. First, I neither had nor wanted to install ruby on my machine. Secondly, I use Windows on my office laptop. So, I decided to port the original script to Go and here is the code&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-go&#34;&gt;package main
 
 import (
@@ -117,37 +116,30 @@ func main() {
 	}
 }
 &lt;/code&gt;&lt;/pre&gt;
-
 &lt;h2 id=&#34;usage&#34;&gt;Usage&lt;/h2&gt;
-
 &lt;pre&gt;&lt;code&gt;git-copy-tags &amp;lt;source-repo&amp;gt; &amp;lt;dest-repo&amp;gt; \[-f\]
 &lt;/code&gt;&lt;/pre&gt;
-
 &lt;p&gt;By default, the script is in &amp;ldquo;dry run&amp;rdquo; mode, which means that it only prints out what it would do, without actually doing it. If you are happy with the result, add -f.&lt;/p&gt;
-
 &lt;p&gt;After running the command with -f, make sure to run &lt;code&gt;git push --tags&lt;/code&gt;  in the destination repository.&lt;/p&gt;
-
 &lt;h2 id=&#34;download&#34;&gt;Download&lt;/h2&gt;
-
-&lt;p&gt;The source code is available in the github &lt;a href=&#34;https://github.com/kalaninja/git-copy-tags&#34; target=&#34;_blank&#34;&gt;repository&lt;/a&gt;. And here is a cross-compiled version for different operating systems (all 64-bit)&lt;/p&gt;
-
+&lt;p&gt;The source code is available in the github 
+&lt;a href=&#34;https://github.com/kalaninja/git-copy-tags&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;repository&lt;/a&gt;. And here is a cross-compiled version for different operating systems (all 64-bit)&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;https://github.com/kalaninja/git-copy-tags/releases/download/release/git-copy-tags.exe&#34; target=&#34;_blank&#34;&gt;Windows&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://github.com/kalaninja/git-copy-tags/releases/download/release/darwin.zip&#34; target=&#34;_blank&#34;&gt;MacOSX&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://github.com/kalaninja/git-copy-tags/releases/download/release/linux.zip&#34; target=&#34;_blank&#34;&gt;Linux&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;https://github.com/kalaninja/git-copy-tags/releases/download/release/git-copy-tags.exe&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Windows&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;https://github.com/kalaninja/git-copy-tags/releases/download/release/darwin.zip&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;MacOSX&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;a href=&#34;https://github.com/kalaninja/git-copy-tags/releases/download/release/linux.zip&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Linux&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;h2 id=&#34;bonus-cross-compilation-in-go&#34;&gt;Bonus. Cross compilation in Go&lt;/h2&gt;
-
 &lt;p&gt;Since Go 1.5 cross compilation is very simple. Just properly set a pair of &lt;code&gt;$GOOS&lt;/code&gt; and &lt;code&gt;$GOARCH&lt;/code&gt; variables and run a build process as usual. For example, on Windows it can be done in the following way:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code class=&#34;language-sh&#34;&gt;set GOARCH=amd64
 set GOOS=linux
 go build
 &lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;The actual list is defined in &lt;a href=&#34;https://github.com/golang/go/blob/master/src/go/build/syslist.go&#34; target=&#34;_blank&#34;&gt;src/go/build/syslist.go&lt;/a&gt; and the valid combinations of &lt;code&gt;$GOOS&lt;/code&gt; and &lt;code&gt;$GOARCH&lt;/code&gt; are:&lt;/p&gt;
-
+&lt;p&gt;The actual list is defined in 
+&lt;a href=&#34;https://github.com/golang/go/blob/master/src/go/build/syslist.go&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;src/go/build/syslist.go&lt;/a&gt; and the valid combinations of &lt;code&gt;$GOOS&lt;/code&gt; and &lt;code&gt;$GOARCH&lt;/code&gt; are:&lt;/p&gt;
 &lt;table cellpadding=&#34;0&#34;&gt;
 &lt;tbody&gt;
 &lt;tr&gt;

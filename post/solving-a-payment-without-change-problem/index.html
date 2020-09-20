@@ -1,13 +1,15 @@
-<!DOCTYPE html>
-<html lang="en-us">
+<!DOCTYPE html><html lang="en-us" >
 
 <head>
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="generator" content="Source Themes Academic 4.5.0">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
 
+  
+
+  
   
 
   
@@ -21,20 +23,35 @@
   
   
 
-  <meta name="author" content="Alexander Kalankhodzhaev">
+  
 
   
   
   
     
   
-  <meta name="description" content="I have come across an interesting problem. A customer is standing at the checkout of a grocery store with his purchases and is asked to pay the exact amount without creating any change. There are notes of various denominations  in his pockets in random order (note denomination is not tied to a real bank notes, the only boundary is that it is an integer greater than 0). The objective is to pick up the necessary sum or indicate that it is not possible. If several solutions are possible then any of them is acceptable. So, let&#39;s solve it using C# language.">
+  <meta name="description" content="I have come across an interesting problem. A customer is standing at the checkout of a grocery store with his purchases and is asked to pay the exact amount without creating any change. There are notes of various denominations  in his pockets in random order (note denomination is not tied to a real bank notes, the only boundary is that it is an integer greater than 0). The objective is to pick up the necessary sum or indicate that it is not possible. If several solutions are possible then any of them is acceptable. So, let&rsquo;s solve it using C# language.">
 
   
   <link rel="alternate" hreflang="en-us" href="/post/solving-a-payment-without-change-problem/">
 
   
 
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
 
   
   
@@ -45,11 +62,17 @@
   
   
   
+  <script src="/js/mathjax-config.js"></script>
+  
+
+  
+  
+  
   
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha256-FMvZuGapsJLjouA6k7Eo2lusoAX9i0ShlWFG6qt7SLc=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
 
     
     
@@ -60,59 +83,222 @@
       
       
         
-          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css" crossorigin="anonymous" title="hl-light">
-          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
         
       
     
 
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css" integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
     
 
     
 
-  
-
-  
-  
-  
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto:400,400italic,700%7CRoboto+Mono&display=swap">
-  
-
-  
-  
-  
-  <link rel="stylesheet" href="/css/academic.min.986fd6dcc6a9841b1bfe2809c80999ba.css">
-
-  
-
-  
-  
-    <script>
-      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-      ga('create', 'UA-80967351-1', 'auto');
+    
+    
       
-      ga('require', 'eventTracker');
-      ga('require', 'outboundLinkTracker');
-      ga('require', 'urlChangeTracker');
-      ga('send', 'pageview');
-    </script>
-    <script async src="https://www.google-analytics.com/analytics.js"></script>
+
+      
+      
+
+      
     
-    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+      
+
+      
+      
+
+      
     
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+    
+      
+      
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto:400,400italic,700%7CRoboto+Mono&display=swap">
+    
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-80967351-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', 'UA-80967351-1', {});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
+  
+
+
   
   
 
   
 
   <link rel="manifest" href="/index.webmanifest">
-  <link rel="icon" type="image/png" href="/img/icon-32.png">
-  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+  <link rel="icon" type="image/png" href="/images/icon_hu45eb22dba3a74074a63777c2344b71bd_547989_32x32_fill_lanczos_center_2.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu45eb22dba3a74074a63777c2344b71bd_547989_192x192_fill_lanczos_center_2.png">
 
   <link rel="canonical" href="/post/solving-a-payment-without-change-problem/">
 
+  
+  
+  
   
   
   
@@ -126,8 +312,8 @@
   <meta property="og:site_name" content="kalan&#39;s blog">
   <meta property="og:url" content="/post/solving-a-payment-without-change-problem/">
   <meta property="og:title" content="Solving a payment without change problem | kalan&#39;s blog">
-  <meta property="og:description" content="I have come across an interesting problem. A customer is standing at the checkout of a grocery store with his purchases and is asked to pay the exact amount without creating any change. There are notes of various denominations  in his pockets in random order (note denomination is not tied to a real bank notes, the only boundary is that it is an integer greater than 0). The objective is to pick up the necessary sum or indicate that it is not possible. If several solutions are possible then any of them is acceptable. So, let&#39;s solve it using C# language."><meta property="og:image" content="/img/icon-192.png">
-  <meta property="twitter:image" content="/img/icon-192.png"><meta property="og:locale" content="en-us">
+  <meta property="og:description" content="I have come across an interesting problem. A customer is standing at the checkout of a grocery store with his purchases and is asked to pay the exact amount without creating any change. There are notes of various denominations  in his pockets in random order (note denomination is not tied to a real bank notes, the only boundary is that it is an integer greater than 0). The objective is to pick up the necessary sum or indicate that it is not possible. If several solutions are possible then any of them is acceptable. So, let&rsquo;s solve it using C# language."><meta property="og:image" content="/images/icon_hu45eb22dba3a74074a63777c2344b71bd_547989_512x512_fill_lanczos_center_2.png">
+  <meta property="twitter:image" content="/images/icon_hu45eb22dba3a74074a63777c2344b71bd_547989_512x512_fill_lanczos_center_2.png"><meta property="og:locale" content="en-us">
   
     
       <meta property="article:published_time" content="2016-07-30T23:21:00&#43;03:00">
@@ -150,19 +336,6 @@
 
 
 
-
-  
-
-
-
-
-
-  
-
-
-
-
-
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -176,20 +349,15 @@
   "datePublished": "2016-07-30T23:21:00+03:00",
   "dateModified": "2016-07-30T23:21:00+03:00",
   
-  "author": {
-    "@type": "Person",
-    "name": "Alexander Kalankhodzhaev"
-  },
-  
   "publisher": {
     "@type": "Organization",
     "name": "kalan's blog",
     "logo": {
       "@type": "ImageObject",
-      "url": "/img/icon-512.png"
+      "url": "/images/icon_hu45eb22dba3a74074a63777c2344b71bd_547989_192x192_fill_lanczos_center_2.png"
     }
   },
-  "description": "\u003cp\u003eI have come across an interesting problem. A customer is standing at the checkout of a grocery store with his purchases and is asked to pay the exact amount without creating any change. There are notes of various denominations  in his pockets in random order (note denomination is not tied to a real bank notes, the only boundary is that it is an integer greater than 0). The objective is to pick up the necessary sum or indicate that it is not possible. If several solutions are possible then any of them is acceptable. So, let's solve it using C# language.\u003c/p\u003e"
+  "description": "\u003cp\u003eI have come across an interesting problem. A customer is standing at the checkout of a grocery store with his purchases and is asked to pay the exact amount without creating any change. There are notes of various denominations  in his pockets in random order (note denomination is not tied to a real bank notes, the only boundary is that it is an integer greater than 0). The objective is to pick up the necessary sum or indicate that it is not possible. If several solutions are possible then any of them is acceptable. So, let\u0026rsquo;s solve it using C# language.\u003c/p\u003e"
 }
 </script>
 
@@ -211,7 +379,19 @@
 
 </head>
 
-<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class=" ">
+
+  
+  
+  
+    <script>window.staDarkLightChooser = true;</script>
+  
+  
+    <script>const isSiteThemeDark = false;</script>
+  
+  
+  <script src="/js/load-theme.js"></script>
 
   <aside class="search-results" id="search">
   <div class="container">
@@ -229,7 +409,7 @@
       <div id="search-box">
         
         <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
-        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search" class="form-control">
         
       </div>
 
@@ -246,24 +426,46 @@
 
 
   
-<nav class="navbar navbar-light fixed-top navbar-expand-lg py-0 compensate-for-scrollbar" id="navbar-main">
+
+
+
+
+
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
   <div class="container">
 
     
+    <div class="d-none d-lg-inline-flex">
       <a class="navbar-brand" href="/">kalan&#39;s blog</a>
-      
-      <button type="button" class="navbar-toggler" data-toggle="collapse"
-              data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-        <span><i class="fas fa-bars"></i></span>
-      </button>
-      
+    </div>
+    
 
     
-    <div class="collapse navbar-collapse" id="navbar">
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">kalan&#39;s blog</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
 
       
-      
-      <ul class="navbar-nav mr-auto">
+      <ul class="navbar-nav d-md-inline-flex">
         
 
         
@@ -275,16 +477,24 @@
         
 
         
+
         
         
         
         
+
         
           
+            
+            
           
           
             
-          
+            
+            
+              
+            
+            
           
         
 
@@ -304,16 +514,24 @@
         
 
         
+
         
         
         
         
+
         
           
+            
+            
           
           
             
-          
+            
+            
+              
+            
+            
           
         
 
@@ -333,16 +551,24 @@
         
 
         
+
         
         
         
         
+
         
           
+            
+            
           
           
             
-          
+            
+            
+              
+            
+            
           
         
 
@@ -362,16 +588,24 @@
         
 
         
+
         
         
         
         
+
         
           
+            
+            
           
           
             
-          
+            
+            
+              
+            
+            
           
         
 
@@ -383,31 +617,45 @@
         
 
       
+
+        
       </ul>
-      <ul class="navbar-nav ml-auto">
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#" aria-label="Search"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
       
 
-        
+      
+      
+      <li class="nav-item dropdown theme-dropdown">
+        <a href="#" class="nav-link js-theme-selector" data-toggle="dropdown" aria-haspopup="true">
+          <i class="fas fa-palette" aria-hidden="true"></i>
+        </a>
+        <div class="dropdown-menu">
+          <a href="#" class="dropdown-item js-set-theme-light">
+            <span>Light</span>
+          </a>
+          <a href="#" class="dropdown-item js-set-theme-dark">
+            <span>Dark</span>
+          </a>
+          <a href="#" class="dropdown-item js-set-theme-auto">
+            <span>Automatic</span>
+          </a>
+        </div>
+      </li>
+      
 
-        
-        <li class="nav-item">
-          <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
-        </li>
-        
+      
 
-        
+    </ul>
 
-        
-        <li class="nav-item">
-          <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
-        </li>
-        
-
-      </ul>
-
-    </div>
   </div>
 </nav>
+
 
 
   <article class="article">
@@ -437,7 +685,6 @@
 
   
     
-
 
 
 <div class="article-metadata">
@@ -478,8 +725,640 @@
     <i class="fas fa-folder mr-1"></i><a href="/categories/algorithms/">Algorithms</a></span>
   
 
-  
+</div>
+
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      <p>I have come across an interesting problem. A customer is standing at the checkout of a grocery store with his purchases and is asked to pay the exact amount without creating any change. There are notes of various denominations  in his pockets in random order (note denomination is not tied to a real bank notes, the only boundary is that it is an integer greater than 0). The objective is to pick up the necessary sum or indicate that it is not possible. If several solutions are possible then any of them is acceptable. So, let&rsquo;s solve it using C# language.</p>
+<p>This problem is a special case of the knapsack problem (given a set of items, each with a weight and a value, determine the number of each item to include in a collection so that the total weight is less than or equal to a given limit and the total value is as large as possible) and is equivalent to a subset sum problem (finding a non-empty subset whose sum is zero) with an extra condition that each element of the set is strictly greater than zero. As it is an NP-complete problem I can think of 2 possible ways to solve it. Let&rsquo;s first discuss the recursive approach and then improve it using dynamic programming.</p>
+<h2 id="recursive-approach">Recursive Approach</h2>
+<p>This is the most naive algorithm. For every element in the set there are two options, either we will include that element in the subset or we won’t include it. Then cycle through all these subsets and, for every one of them, check if the subset sum equals the right number. This solution is quite similar to <em>generating all strings of n bits</em> and its time complexity is as high as_ O(n*2n)_, since there are _2n_ subsets and for each subset we need to sum _n_ elements.</p>
+<p>Let&rsquo;s improve it a bit. First optimization comes from the idea that we do not really need to calculate all the possible subsets and calculate all the sums afterward. Instead we can merge these two steps in a single operation and have a means to restore the set that produced the right sum. Having a set <em>A</em> of elements <em>{a1, a2, a3 &hellip; an}</em> let&rsquo;s build a tree of all possible sums until we find a target sum <em>S</em>. Let&rsquo;s start with adding 0 to the tree and then adding each element of <em>A</em> to all the elements in this tree.</p>
+<table style="width: 548px;">
+<tbody>
+<tr style="height: 24px;">
+<td style="text-align: center; width: 38px; height: 24px;"><em><strong> </strong></em></td>
+<td style="text-align: center; width: 52px; height: 24px;"><em><strong>a<sub>1</sub></strong></em></td>
+<td style="text-align: center; width: 75px; height: 24px;"><em><strong>a<sub>2</sub></strong></em></td>
+<td style="text-align: center; width: 114px; height: 24px;"><em><strong>a<sub>3</sub></strong></em></td>
+<td style="text-align: center; width: 42px; height: 24px;"><em><strong>...</strong></em></td>
+<td style="text-align: center; width: 191px; height: 24px;"><em><strong>a<sub>n</sub></strong></em></td>
+</tr>
+<tr style="height: 24px;">
+<td style="text-align: center; width: 38px; height: 24px;"><em>0</em></td>
+<td style="text-align: center; width: 52px; height: 24px;"><em>0+a<sub>1</sub></em></td>
+<td style="text-align: center; width: 75px; height: 24px;"><em>0+a<sub>2</sub></em></td>
+<td style="text-align: center; width: 114px; height: 24px;"><em>0+a<sub>3</sub></em></td>
+<td style="text-align: center; width: 42px; height: 24px;"><em>...</em></td>
+<td style="text-align: center; width: 191px; height: 24px;"><em>0+a<sub>n</sub></em></td>
+</tr>
+<tr style="height: 24px;">
+<td style="text-align: center; width: 38px; height: 24px;"><em> </em></td>
+<td style="text-align: center; width: 52px; height: 24px;"><em> </em></td>
+<td style="text-align: center; width: 75px; height: 24px;"><em>(0+a<sub>1</sub>)+a<sub>2</sub></em></td>
+<td style="text-align: center; width: 114px; height: 24px;"><em>(0+a<sub>1</sub>)+a<sub>3</sub></em></td>
+<td style="text-align: center; width: 42px; height: 24px;"><em>... </em></td>
+<td style="text-align: center; width: 191px; height: 24px;"><em>(0+a<sub>1</sub>)+a<sub>n</sub></em></td>
+</tr>
+<tr style="height: 24px;">
+<td style="text-align: center; width: 38px; height: 24px;"><em> </em></td>
+<td style="text-align: center; width: 52px; height: 24px;"><em> </em></td>
+<td style="text-align: center; width: 75px; height: 24px;"><em> </em></td>
+<td style="text-align: center; width: 114px; height: 24px;"><em>(0+a<sub>2</sub>)+a<sub>3</sub></em></td>
+<td style="text-align: center; width: 42px; height: 24px;"><em>... </em></td>
+<td style="text-align: center; width: 191px; height: 24px;"><em>(0+a<sub>2</sub>)+a<sub>n</sub></em></td>
+</tr>
+<tr style="height: 24px;">
+<td style="text-align: center; width: 38px; height: 24px;"><em> </em></td>
+<td style="text-align: center; width: 52px; height: 24px;"><em> </em></td>
+<td style="text-align: center; width: 75px; height: 24px;"><em> </em></td>
+<td style="text-align: center; width: 114px; height: 24px;"><em>((0+a<sub>1</sub>)+a<sub>2</sub>)+a<sub>3</sub></em></td>
+<td style="text-align: center; width: 42px; height: 24px;"><em>...</em></td>
+<td style="text-align: center; width: 191px; height: 24px;"><em>((0+a<sub>1</sub>)+a<sub>2</sub>)+a<sub>n</sub></em></td>
+</tr>
+<tr style="height: 24px;">
+<td style="text-align: center; width: 38px; height: 24px;"><em> </em></td>
+<td style="text-align: center; width: 52px; height: 24px;"><em> </em></td>
+<td style="text-align: center; width: 75px; height: 24px;"><em> </em></td>
+<td style="text-align: center; width: 114px; height: 24px;"><em> </em></td>
+<td style="text-align: center; width: 42px; height: 24px;"><em> </em></td>
+<td style="text-align: center; width: 191px; height: 24px;"><em>…</em></td>
+</tr>
+<tr style="height: 24px;">
+<td style="text-align: center; width: 38px; height: 24px;"><em> </em></td>
+<td style="text-align: center; width: 52px; height: 24px;"><em> </em></td>
+<td style="text-align: center; width: 75px; height: 24px;"><em> </em></td>
+<td style="text-align: center; width: 114px; height: 24px;"><em> </em></td>
+<td style="text-align: center; width: 42px; height: 24px;"><em> </em></td>
+<td style="text-align: center; width: 191px; height: 24px;"><em>(((0+a<sub>1</sub>)+a<sub>2</sub>)+a<sub>3</sub>)+…+a<sub>n</sub></em></td>
+</tr>
+</tbody>
+</table>
+<p>As you can see now, no extra step is needed to sum each subset, instead each level of the tree uses sums from the previous tiers. So, there is 1 sum for the 1st element, 2 sums for the 2nd, 4 sums for the 3rd, 8 sums for the 4th, etc. This forms a geometrical progression with the total of $$\frac {1(1-2^n)}{1-2} = 2^n-1$$ elements. Now this method&rsquo;s complexity is <em>O(2n)</em>.</p>
+<p>Secondly, we can utilize the boundary condition. As we know that all the elements in the set are positive, it is obvious that adding a new element to the set only increases the current sum. So, if the current sum of the node is higher than the target sum this solution becomes rejected and is not used in further computations. This decreases the complexity to <em>O(2n) in the worst case</em>. Also we can benefit from sorting the set in the descending order, because this will help to reject more solutions in the early stage. Here is the code:</p>
+<pre><code class="language-csharp">public static List&lt;int&gt; FindRecursive(int[] set, int targetSum, int currentSum, int currentIndex)
+{
+	for (var i = currentIndex; i &lt; set.Length; i++)
+	{
+		var newSum = currentSum + set[i];
+		if (newSum &gt; targetSum)
+		{
+			continue;
+		}
+
+		if (newSum == targetSum)
+		{
+			return new List&lt;int&gt; { set[i] };
+		}
+
+		var result = FindRecursive(set, targetSum, newSum, i + 1);
+		if (result == null)
+		{
+			continue;
+		}
+
+		result.Add(set[i]);
+		return result;
+	}
+
+	return null;
+}
+
+public static void Main(string[] args)
+{
+	const int sum = 47;
+	var set = new[] { 100, 40, 5, 1, 1, 1, 1 };
+	
+	var result = FindRecursive(set, sum, 0, 0);
+	Console.WriteLine(
+		result?.Select(x =&gt; x.ToString()).Aggregate((x, y) =&gt; x + &quot;,&quot; + y) ?? &quot;null&quot;);
+}
+</code></pre>
+<h2 id="dynamic-programming">Dynamic programming</h2>
+<p>This problem can be solved in pseudo-polynomial time using dynamic programming (a method for solving a complex problem by breaking it down into a collection of simpler subproblems). Define the boolean-valued function <em>Q(n, s)</em> so that:</p>
+<ul>
+<li>Q(n, 0) = true (return empty set)</li>
+<li>Q(0, s) = false, if s &gt; 0 (you can&rsquo;t pick a positive sum with an empty set)</li>
+</ul>
+<p>Then all other cases are: <em>Q(n, s) = Q(n-1, s) || Q(n-1, s-aₙ)</em>. The only thing left is to fill the array of values of Q(i, s) for 1 ≤ i ≤ n using a simple recursion. The complexity of this method is <em>O(n*s)</em> which is linear.</p>
+<p>Let&rsquo;s see how it works in the example: Given a set A {1, 2, 5, 7}, is there subset whose sum is 9?</p>
+<ol>
+<li>Sum of 0 can be picked for any n with an empty set, the only sum that can be picked with an empty set is 0.</li>
+</ol>
+<table width="681">
+<tbody>
+<tr>
+<td style="width: 33px;"></td>
+<td style="text-align: center; width: 57px;">0</td>
+<td style="text-align: center; width: 57px;">1</td>
+<td style="text-align: center; width: 58px;">2</td>
+<td style="text-align: center; width: 58px;">3</td>
+<td style="text-align: center; width: 58px;">4</td>
+<td style="text-align: center; width: 58px;">5</td>
+<td style="text-align: center; width: 58px;">6</td>
+<td style="text-align: center; width: 58px;">7</td>
+<td style="text-align: center; width: 58px;">8</td>
+<td style="text-align: center; width: 58px;">9</td>
+</tr>
+<tr>
+<td style="width: 33px;">0</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+</tr>
+<tr>
+<td style="width: 33px;">1</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+</tr>
+<tr>
+<td style="width: 33px;">2</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+</tr>
+<tr>
+<td style="width: 33px;">5</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+</tr>
+<tr>
+<td style="width: 33px;">7</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+</tr>
+</tbody>
+</table>
+<ol start="2">
+<li>Adding 1 to the set we can now pick a sum of 1.</li>
+</ol>
+<table width="681">
+<tbody>
+<tr>
+<td style="width: 33px;"></td>
+<td style="text-align: center; width: 57px;">0</td>
+<td style="text-align: center; width: 57px;">1</td>
+<td style="text-align: center; width: 58px;">2</td>
+<td style="text-align: center; width: 58px;">3</td>
+<td style="text-align: center; width: 58px;">4</td>
+<td style="text-align: center; width: 58px;">5</td>
+<td style="text-align: center; width: 58px;">6</td>
+<td style="text-align: center; width: 58px;">7</td>
+<td style="text-align: center; width: 58px;">8</td>
+<td style="text-align: center; width: 58px;">9</td>
+</tr>
+<tr>
+<td style="width: 33px;">0</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+</tr>
+<tr>
+<td style="width: 33px;">1</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 58px;"> false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;"> false</td>
+<td style="text-align: center; width: 58px;"> false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+</tr>
+<tr>
+<td style="width: 33px;">2</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+</tr>
+<tr>
+<td style="width: 33px;">5</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+</tr>
+<tr>
+<td style="width: 33px;">7</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+</tr>
+</tbody>
+</table>
+<ol start="3">
+<li>Adding 2 to the set we can now pick a sum of 2 and 3 and we already can pick 1.</li>
+</ol>
+<table width="681">
+<tbody>
+<tr>
+<td style="width: 33px;"></td>
+<td style="text-align: center; width: 57px;">0</td>
+<td style="text-align: center; width: 57px;">1</td>
+<td style="text-align: center; width: 58px;">2</td>
+<td style="text-align: center; width: 58px;">3</td>
+<td style="text-align: center; width: 58px;">4</td>
+<td style="text-align: center; width: 58px;">5</td>
+<td style="text-align: center; width: 58px;">6</td>
+<td style="text-align: center; width: 58px;">7</td>
+<td style="text-align: center; width: 58px;">8</td>
+<td style="text-align: center; width: 58px;">9</td>
+</tr>
+<tr>
+<td style="width: 33px;">0</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+</tr>
+<tr>
+<td style="width: 33px;">1</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 58px;"> false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;"> false</td>
+<td style="text-align: center; width: 58px;"> false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+</tr>
+<tr>
+<td style="width: 33px;">2</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;"> true</td>
+<td style="text-align: center; width: 58px;"> true</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;"> false</td>
+<td style="text-align: center; width: 58px;"> false</td>
+<td style="text-align: center; width: 58px;"> false</td>
+<td style="text-align: center; width: 58px;"> false</td>
+<td style="text-align: center; width: 58px;"> false</td>
+<td style="text-align: center; width: 58px;">false</td>
+</tr>
+<tr>
+<td style="width: 33px;">5</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+</tr>
+<tr>
+<td style="width: 33px;">7</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+<td style="text-align: center; width: 58px;"></td>
+</tr>
+</tbody>
+</table>
+<ol start="4">
+<li>Complete the table. Here is the answer shown in red.</li>
+</ol>
+<table width="681">
+<tbody>
+<tr>
+<td style="width: 33px;"></td>
+<td style="text-align: center; width: 57px;">0</td>
+<td style="text-align: center; width: 57px;">1</td>
+<td style="text-align: center; width: 58px;">2</td>
+<td style="text-align: center; width: 58px;">3</td>
+<td style="text-align: center; width: 58px;">4</td>
+<td style="text-align: center; width: 58px;">5</td>
+<td style="text-align: center; width: 58px;">6</td>
+<td style="text-align: center; width: 58px;">7</td>
+<td style="text-align: center; width: 58px;">8</td>
+<td style="text-align: center; width: 58px;">9</td>
+</tr>
+<tr>
+<td style="width: 33px;">0</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+</tr>
+<tr>
+<td style="width: 33px;">1</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+</tr>
+<tr>
+<td style="width: 33px;">2</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+</tr>
+<tr>
+<td style="width: 33px;">5</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;">false</td>
+</tr>
+<tr>
+<td style="width: 33px;">7</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="width: 58px; text-align: center; background-color: #ed8585;">true</td>
+</tr>
+</tbody>
+</table>
+<ol start="5">
+<li>How to restore the set. We got the correct answer after adding 7 to the set, so let&rsquo;s remove it: 9-7=2. We got a sum of 2 after adding 2 to the set, so let&rsquo;s remove it. Now we are at the sum of 0, so the restoration is over. The track is shown in yellow.</li>
+</ol>
+<table width="681">
+<tbody>
+<tr>
+<td style="width: 33px;"></td>
+<td style="text-align: center; width: 57px;">0</td>
+<td style="text-align: center; width: 57px;">1</td>
+<td style="text-align: center; width: 58px;">2</td>
+<td style="text-align: center; width: 58px;">3</td>
+<td style="text-align: center; width: 58px;">4</td>
+<td style="text-align: center; width: 58px;">5</td>
+<td style="text-align: center; width: 58px;">6</td>
+<td style="text-align: center; width: 58px;">7</td>
+<td style="text-align: center; width: 58px;">8</td>
+<td style="text-align: center; width: 58px;">9</td>
+</tr>
+<tr>
+<td style="width: 33px;">0</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+</tr>
+<tr>
+<td style="width: 33px;">1</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+</tr>
+<tr>
+<td style="width: 33px;">2</td>
+<td style="width: 57px; text-align: center; background-color: #f0e5a8;">true</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="width: 58px; text-align: center; background-color: #f0e5a8;">true</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">false</td>
+</tr>
+<tr>
+<td style="width: 33px;">5</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="width: 58px; text-align: center; background-color: #f0e5a8;">true</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;">false</td>
+</tr>
+<tr>
+<td style="width: 33px;">7</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="text-align: center; width: 57px;">true</td>
+<td style="width: 58px; text-align: center; background-color: #f0e5a8;">true</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;">false</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="text-align: center; width: 58px;">true</td>
+<td style="width: 58px; text-align: center; background-color: #f0e5a8;">true</td>
+</tr>
+</tbody>
+</table>
+<p>And finally, here is the code:</p>
+<pre><code class="language-csharp">public static List&lt;int&gt; FindDP(int[] set, int sum)
+{
+	var solution = new bool[set.Length + 1, sum + 1];
+	for (var i = 0; i &lt;= set.Length; i++)
+	{
+		solution[i, 0] = true;
+	}
+
+	for (var i = 1; i &lt;= set.Length; i++)
+	{
+		for (var j = 1; j &lt;= sum; j++)
+		{
+			solution[i, j] = solution[i - 1, j];
+
+			if (!solution[i, j] &amp;&amp; j &gt;= set[i - 1])
+			{
+				solution[i, j] = solution[i, j] || solution[i - 1, j - set[i - 1]];
+			}
+		}
+
+		if (!solution[i, sum])
+		{
+			continue;
+		}
+
+		var result = new List&lt;int&gt;();
+		var q = sum;
+		for (var p = i - 1; p &gt;= 0; p--)
+		{
+			if (solution[p, q])
+			{
+				continue;
+			}
+
+			var s = set[p];
+			result.Add(s);
+			q -= s;
+		}
+
+		return result;
+	}
+
+	return null;
+}
+</code></pre>
+<h2 id="ps">PS</h2>
+<p>Solving this task I&rsquo;ve started thinking about making a github repo for such algorithms, so that one can easily find an implementation of a needed algorithm in c# or simply use it without needing to reinvent the wheel.</p>
+    </div>
+
+    
+
+
+
+
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tags/algorithm/">algorithm</a>
+  
+  <a class="badge badge-light" href="/tags/csharp/">csharp</a>
+  
+  <a class="badge badge-light" href="/tags/dynamic-programming/">dynamic programming</a>
+  
+  <a class="badge badge-light" href="/tags/subset-sum-problem/">subset sum problem</a>
+  
+</div>
+
+
+
 <div class="share-box" aria-hidden="true">
   <ul class="share">
     
@@ -565,663 +1444,130 @@
 </div>
 
 
+
+
+
+
+
+
+
+
+
+
+  
   
 
-</div>
 
+
+
+
+  
     
+    
+    
+      
+    
+    
+    
+    <div class="media author-card content-widget-hr">
+      
+        
+        <img class="avatar mr-3 avatar-circle" src="/authors/admin/avatar_hu0582f41c68c6aa911ecb1f0dbf4a2010_40563_270x270_fill_q90_lanczos_center.jpg" alt="">
+      
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+      <div class="media-body">
+        <h5 class="card-title"><a href="/"></a></h5>
+        <h6 class="card-subtitle">Blockchain TechLead</h6>
+        
+        <ul class="network-icon" aria-hidden="true">
   
-</div>
-
-
-
-  <div class="article-container">
-
-    <div class="article-style">
-      <p>I have come across an interesting problem. A customer is standing at the checkout of a grocery store with his purchases and is asked to pay the exact amount without creating any change. There are notes of various denominations  in his pockets in random order (note denomination is not tied to a real bank notes, the only boundary is that it is an integer greater than 0). The objective is to pick up the necessary sum or indicate that it is not possible. If several solutions are possible then any of them is acceptable. So, let's solve it using C# language.</p>
-
-<p>This problem is a special case of the knapsack problem (given a set of items, each with a weight and a value, determine the number of each item to include in a collection so that the total weight is less than or equal to a given limit and the total value is as large as possible) and is equivalent to a subset sum problem (finding a non-empty subset whose sum is zero) with an extra condition that each element of the set is strictly greater than zero. As it is an NP-complete problem I can think of 2 possible ways to solve it. Let's first discuss the recursive approach and then improve it using dynamic programming.</p>
-
-<h2 id="recursive-approach">Recursive Approach</h2>
-
-<p>This is the most naive algorithm. For every element in the set there are two options, either we will include that element in the subset or we won’t include it. Then cycle through all these subsets and, for every one of them, check if the subset sum equals the right number. This solution is quite similar to <em>generating all strings of n bits</em> and its time complexity is as high as<em> O(n*2n)</em>, since there are <em>2n</em> subsets and for each subset we need to sum <em>n</em> elements.</p>
-
-<p>Let's improve it a bit. First optimization comes from the idea that we do not really need to calculate all the possible subsets and calculate all the sums afterward. Instead we can merge these two steps in a single operation and have a means to restore the set that produced the right sum. Having a set <em>A</em> of elements <em>{a1, a2, a3 ... an}</em> let's build a tree of all possible sums until we find a target sum <em>S</em>. Let's start with adding 0 to the tree and then adding each element of <em>A</em> to all the elements in this tree.
-<table style="width: 548px;">
-<tbody>
-<tr style="height: 24px;">
-<td style="text-align: center; width: 38px; height: 24px;"><em><strong> </strong></em></td>
-<td style="text-align: center; width: 52px; height: 24px;"><em><strong>a<sub>1</sub></strong></em></td>
-<td style="text-align: center; width: 75px; height: 24px;"><em><strong>a<sub>2</sub></strong></em></td>
-<td style="text-align: center; width: 114px; height: 24px;"><em><strong>a<sub>3</sub></strong></em></td>
-<td style="text-align: center; width: 42px; height: 24px;"><em><strong>...</strong></em></td>
-<td style="text-align: center; width: 191px; height: 24px;"><em><strong>a<sub>n</sub></strong></em></td>
-</tr>
-<tr style="height: 24px;">
-<td style="text-align: center; width: 38px; height: 24px;"><em>0</em></td>
-<td style="text-align: center; width: 52px; height: 24px;"><em>0+a<sub>1</sub></em></td>
-<td style="text-align: center; width: 75px; height: 24px;"><em>0+a<sub>2</sub></em></td>
-<td style="text-align: center; width: 114px; height: 24px;"><em>0+a<sub>3</sub></em></td>
-<td style="text-align: center; width: 42px; height: 24px;"><em>...</em></td>
-<td style="text-align: center; width: 191px; height: 24px;"><em>0+a<sub>n</sub></em></td>
-</tr>
-<tr style="height: 24px;">
-<td style="text-align: center; width: 38px; height: 24px;"><em> </em></td>
-<td style="text-align: center; width: 52px; height: 24px;"><em> </em></td>
-<td style="text-align: center; width: 75px; height: 24px;"><em>(0+a<sub>1</sub>)+a<sub>2</sub></em></td>
-<td style="text-align: center; width: 114px; height: 24px;"><em>(0+a<sub>1</sub>)+a<sub>3</sub></em></td>
-<td style="text-align: center; width: 42px; height: 24px;"><em>... </em></td>
-<td style="text-align: center; width: 191px; height: 24px;"><em>(0+a<sub>1</sub>)+a<sub>n</sub></em></td>
-</tr>
-<tr style="height: 24px;">
-<td style="text-align: center; width: 38px; height: 24px;"><em> </em></td>
-<td style="text-align: center; width: 52px; height: 24px;"><em> </em></td>
-<td style="text-align: center; width: 75px; height: 24px;"><em> </em></td>
-<td style="text-align: center; width: 114px; height: 24px;"><em>(0+a<sub>2</sub>)+a<sub>3</sub></em></td>
-<td style="text-align: center; width: 42px; height: 24px;"><em>... </em></td>
-<td style="text-align: center; width: 191px; height: 24px;"><em>(0+a<sub>2</sub>)+a<sub>n</sub></em></td>
-</tr>
-<tr style="height: 24px;">
-<td style="text-align: center; width: 38px; height: 24px;"><em> </em></td>
-<td style="text-align: center; width: 52px; height: 24px;"><em> </em></td>
-<td style="text-align: center; width: 75px; height: 24px;"><em> </em></td>
-<td style="text-align: center; width: 114px; height: 24px;"><em>((0+a<sub>1</sub>)+a<sub>2</sub>)+a<sub>3</sub></em></td>
-<td style="text-align: center; width: 42px; height: 24px;"><em>...</em></td>
-<td style="text-align: center; width: 191px; height: 24px;"><em>((0+a<sub>1</sub>)+a<sub>2</sub>)+a<sub>n</sub></em></td>
-</tr>
-<tr style="height: 24px;">
-<td style="text-align: center; width: 38px; height: 24px;"><em> </em></td>
-<td style="text-align: center; width: 52px; height: 24px;"><em> </em></td>
-<td style="text-align: center; width: 75px; height: 24px;"><em> </em></td>
-<td style="text-align: center; width: 114px; height: 24px;"><em> </em></td>
-<td style="text-align: center; width: 42px; height: 24px;"><em> </em></td>
-<td style="text-align: center; width: 191px; height: 24px;"><em>…</em></td>
-</tr>
-<tr style="height: 24px;">
-<td style="text-align: center; width: 38px; height: 24px;"><em> </em></td>
-<td style="text-align: center; width: 52px; height: 24px;"><em> </em></td>
-<td style="text-align: center; width: 75px; height: 24px;"><em> </em></td>
-<td style="text-align: center; width: 114px; height: 24px;"><em> </em></td>
-<td style="text-align: center; width: 42px; height: 24px;"><em> </em></td>
-<td style="text-align: center; width: 191px; height: 24px;"><em>(((0+a<sub>1</sub>)+a<sub>2</sub>)+a<sub>3</sub>)+…+a<sub>n</sub></em></td>
-</tr>
-</tbody>
-</table></p>
-
-<p>As you can see now, no extra step is needed to sum each subset, instead each level of the tree uses sums from the previous tiers. So, there is 1 sum for the 1st element, 2 sums for the 2nd, 4 sums for the 3rd, 8 sums for the 4th, etc. This forms a geometrical progression with the total of <span  class="math">\(\frac {1(1-2^n)}{1-2} = 2^n-1\)</span> elements. Now this method's complexity is <em>O(2n)</em>.</p>
-
-<p>Secondly, we can utilize the boundary condition. As we know that all the elements in the set are positive, it is obvious that adding a new element to the set only increases the current sum. So, if the current sum of the node is higher than the target sum this solution becomes rejected and is not used in further computations. This decreases the complexity to <em>O(2n) in the worst case</em>. Also we can benefit from sorting the set in the descending order, because this will help to reject more solutions in the early stage. Here is the code:</p>
-
-<pre><code class="language-csharp">public static List&lt;int&gt; FindRecursive(int[] set, int targetSum, int currentSum, int currentIndex)
-{
-	for (var i = currentIndex; i &lt; set.Length; i++)
-	{
-		var newSum = currentSum + set[i];
-		if (newSum &gt; targetSum)
-		{
-			continue;
-		}
-
-		if (newSum == targetSum)
-		{
-			return new List&lt;int&gt; { set[i] };
-		}
-
-		var result = FindRecursive(set, targetSum, newSum, i + 1);
-		if (result == null)
-		{
-			continue;
-		}
-
-		result.Add(set[i]);
-		return result;
-	}
-
-	return null;
-}
-
-public static void Main(string[] args)
-{
-	const int sum = 47;
-	var set = new[] { 100, 40, 5, 1, 1, 1, 1 };
-	
-	var result = FindRecursive(set, sum, 0, 0);
-	Console.WriteLine(
-		result?.Select(x =&gt; x.ToString()).Aggregate((x, y) =&gt; x + &quot;,&quot; + y) ?? &quot;null&quot;);
-}
-</code></pre>
-
-<h2 id="dynamic-programming">Dynamic programming</h2>
-
-<p>This problem can be solved in pseudo-polynomial time using dynamic programming (a method for solving a complex problem by breaking it down into a collection of simpler subproblems). Define the boolean-valued function <em>Q(n, s)</em> so that:</p>
-
-<ul>
-<li>Q(n, 0) = true (return empty set)</li>
-<li>Q(0, s) = false, if s &gt; 0 (you can't pick a positive sum with an empty set)</li>
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.linkedin.com/in/kalaninja/" target="_blank" rel="noopener">
+        <i class="fab fa-linkedin"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.facebook.com/kalaninja" target="_blank" rel="noopener">
+        <i class="fab fa-facebook"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/kalaninja" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://vk.com/kalan" target="_blank" rel="noopener">
+        <i class="fab fa-vk"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+    <li>
+      <a href="mailto:kalansoft@gmail.com" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
 </ul>
 
-<p>Then all other cases are: <em>Q(n, s) = Q(n-1, s) || Q(n-1, s-aₙ)</em>. The only thing left is to fill the array of values of Q(i, s) for 1 ≤ i ≤ n using a simple recursion. The complexity of this method is <em>O(n*s)</em> which is linear.</p>
-
-<p>Let's see how it works in the example: Given a set A {1, 2, 5, 7}, is there subset whose sum is 9?</p>
-
-<ol>
-<li><p>Sum of 0 can be picked for any n with an empty set, the only sum that can be picked with an empty set is 0.
-<table width="681">
-<tbody>
-<tr>
-<td style="width: 33px;"></td>
-<td style="text-align: center; width: 57px;">0</td>
-<td style="text-align: center; width: 57px;">1</td>
-<td style="text-align: center; width: 58px;">2</td>
-<td style="text-align: center; width: 58px;">3</td>
-<td style="text-align: center; width: 58px;">4</td>
-<td style="text-align: center; width: 58px;">5</td>
-<td style="text-align: center; width: 58px;">6</td>
-<td style="text-align: center; width: 58px;">7</td>
-<td style="text-align: center; width: 58px;">8</td>
-<td style="text-align: center; width: 58px;">9</td>
-</tr>
-<tr>
-<td style="width: 33px;">0</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-</tr>
-<tr>
-<td style="width: 33px;">1</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-</tr>
-<tr>
-<td style="width: 33px;">2</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-</tr>
-<tr>
-<td style="width: 33px;">5</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-</tr>
-<tr>
-<td style="width: 33px;">7</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-</tr>
-</tbody>
-</table></p></li>
-
-<li><p>Adding 1 to the set we can now pick a sum of 1.
-<table width="681">
-<tbody>
-<tr>
-<td style="width: 33px;"></td>
-<td style="text-align: center; width: 57px;">0</td>
-<td style="text-align: center; width: 57px;">1</td>
-<td style="text-align: center; width: 58px;">2</td>
-<td style="text-align: center; width: 58px;">3</td>
-<td style="text-align: center; width: 58px;">4</td>
-<td style="text-align: center; width: 58px;">5</td>
-<td style="text-align: center; width: 58px;">6</td>
-<td style="text-align: center; width: 58px;">7</td>
-<td style="text-align: center; width: 58px;">8</td>
-<td style="text-align: center; width: 58px;">9</td>
-</tr>
-<tr>
-<td style="width: 33px;">0</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-</tr>
-<tr>
-<td style="width: 33px;">1</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 58px;"> false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;"> false</td>
-<td style="text-align: center; width: 58px;"> false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-</tr>
-<tr>
-<td style="width: 33px;">2</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-</tr>
-<tr>
-<td style="width: 33px;">5</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-</tr>
-<tr>
-<td style="width: 33px;">7</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-</tr>
-</tbody>
-</table></p></li>
-
-<li><p>Adding 2 to the set we can now pick a sum of 2 and 3 and we already can pick 1.
-<table width="681">
-<tbody>
-<tr>
-<td style="width: 33px;"></td>
-<td style="text-align: center; width: 57px;">0</td>
-<td style="text-align: center; width: 57px;">1</td>
-<td style="text-align: center; width: 58px;">2</td>
-<td style="text-align: center; width: 58px;">3</td>
-<td style="text-align: center; width: 58px;">4</td>
-<td style="text-align: center; width: 58px;">5</td>
-<td style="text-align: center; width: 58px;">6</td>
-<td style="text-align: center; width: 58px;">7</td>
-<td style="text-align: center; width: 58px;">8</td>
-<td style="text-align: center; width: 58px;">9</td>
-</tr>
-<tr>
-<td style="width: 33px;">0</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-</tr>
-<tr>
-<td style="width: 33px;">1</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 58px;"> false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;"> false</td>
-<td style="text-align: center; width: 58px;"> false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-</tr>
-<tr>
-<td style="width: 33px;">2</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;"> true</td>
-<td style="text-align: center; width: 58px;"> true</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;"> false</td>
-<td style="text-align: center; width: 58px;"> false</td>
-<td style="text-align: center; width: 58px;"> false</td>
-<td style="text-align: center; width: 58px;"> false</td>
-<td style="text-align: center; width: 58px;"> false</td>
-<td style="text-align: center; width: 58px;">false</td>
-</tr>
-<tr>
-<td style="width: 33px;">5</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-</tr>
-<tr>
-<td style="width: 33px;">7</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-<td style="text-align: center; width: 58px;"></td>
-</tr>
-</tbody>
-</table></p></li>
-
-<li><p>Complete the table. Here is the answer shown in red.
-<table width="681">
-<tbody>
-<tr>
-<td style="width: 33px;"></td>
-<td style="text-align: center; width: 57px;">0</td>
-<td style="text-align: center; width: 57px;">1</td>
-<td style="text-align: center; width: 58px;">2</td>
-<td style="text-align: center; width: 58px;">3</td>
-<td style="text-align: center; width: 58px;">4</td>
-<td style="text-align: center; width: 58px;">5</td>
-<td style="text-align: center; width: 58px;">6</td>
-<td style="text-align: center; width: 58px;">7</td>
-<td style="text-align: center; width: 58px;">8</td>
-<td style="text-align: center; width: 58px;">9</td>
-</tr>
-<tr>
-<td style="width: 33px;">0</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-</tr>
-<tr>
-<td style="width: 33px;">1</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-</tr>
-<tr>
-<td style="width: 33px;">2</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-</tr>
-<tr>
-<td style="width: 33px;">5</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;">false</td>
-</tr>
-<tr>
-<td style="width: 33px;">7</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="width: 58px; text-align: center; background-color: #ed8585;">true</td>
-</tr>
-</tbody>
-</table></p></li>
-
-<li><p>How to restore the set. We got the correct answer after adding 7 to the set, so let's remove it: 9-7=2. We got a sum of 2 after adding 2 to the set, so let's remove it. Now we are at the sum of 0, so the restoration is over. The track is shown in yellow.
-<table width="681">
-<tbody>
-<tr>
-<td style="width: 33px;"></td>
-<td style="text-align: center; width: 57px;">0</td>
-<td style="text-align: center; width: 57px;">1</td>
-<td style="text-align: center; width: 58px;">2</td>
-<td style="text-align: center; width: 58px;">3</td>
-<td style="text-align: center; width: 58px;">4</td>
-<td style="text-align: center; width: 58px;">5</td>
-<td style="text-align: center; width: 58px;">6</td>
-<td style="text-align: center; width: 58px;">7</td>
-<td style="text-align: center; width: 58px;">8</td>
-<td style="text-align: center; width: 58px;">9</td>
-</tr>
-<tr>
-<td style="width: 33px;">0</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-</tr>
-<tr>
-<td style="width: 33px;">1</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-</tr>
-<tr>
-<td style="width: 33px;">2</td>
-<td style="width: 57px; text-align: center; background-color: #f0e5a8;">true</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="width: 58px; text-align: center; background-color: #f0e5a8;">true</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">false</td>
-</tr>
-<tr>
-<td style="width: 33px;">5</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="width: 58px; text-align: center; background-color: #f0e5a8;">true</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;">false</td>
-</tr>
-<tr>
-<td style="width: 33px;">7</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="text-align: center; width: 57px;">true</td>
-<td style="width: 58px; text-align: center; background-color: #f0e5a8;">true</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;">false</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="text-align: center; width: 58px;">true</td>
-<td style="width: 58px; text-align: center; background-color: #f0e5a8;">true</td>
-</tr>
-</tbody>
-</table></p></li>
-</ol>
-
-<p>And finally, here is the code:</p>
-
-<pre><code class="language-csharp">public static List&lt;int&gt; FindDP(int[] set, int sum)
-{
-	var solution = new bool[set.Length + 1, sum + 1];
-	for (var i = 0; i &lt;= set.Length; i++)
-	{
-		solution[i, 0] = true;
-	}
-
-	for (var i = 1; i &lt;= set.Length; i++)
-	{
-		for (var j = 1; j &lt;= sum; j++)
-		{
-			solution[i, j] = solution[i - 1, j];
-
-			if (!solution[i, j] &amp;&amp; j &gt;= set[i - 1])
-			{
-				solution[i, j] = solution[i, j] || solution[i - 1, j - set[i - 1]];
-			}
-		}
-
-		if (!solution[i, sum])
-		{
-			continue;
-		}
-
-		var result = new List&lt;int&gt;();
-		var q = sum;
-		for (var p = i - 1; p &gt;= 0; p--)
-		{
-			if (solution[p, q])
-			{
-				continue;
-			}
-
-			var s = set[p];
-			result.Add(s);
-			q -= s;
-		}
-
-		return result;
-	}
-
-	return null;
-}
-</code></pre>
-
-<h2 id="ps">PS</h2>
-
-<p>Solving this task I've started thinking about making a github repo for such algorithms, so that one can easily find an implementation of a needed algorithm in c# or simply use it without needing to reinvent the wheel.</p>
+      </div>
     </div>
-
-    
-
-
-    
-
-<div class="article-tags">
-  
-  <a class="badge badge-light" href="/tags/algorithm/">algorithm</a>
-  
-  <a class="badge badge-light" href="/tags/csharp/">csharp</a>
-  
-  <a class="badge badge-light" href="/tags/dynamic-programming/">dynamic programming</a>
-  
-  <a class="badge badge-light" href="/tags/subset-sum-problem/">subset sum problem</a>
-  
-</div>
-
-
-
-    
-      
-
-
-
-
-
-
-
-
   
 
 
@@ -1229,120 +1575,7 @@ public static void Main(string[] args)
 
 
 
-  
-  
-  
-    
-  
-  
-  <div class="media author-card">
-    
-      
-      <img class="portrait mr-3" src="/authors/admin/avatar_hu0582f41c68c6aa911ecb1f0dbf4a2010_40563_250x250_fill_q90_lanczos_center.jpg" alt="Avatar">
-    
 
-    <div class="media-body">
-      <h5 class="card-title"><a href="/">Alexander Kalankhodzhaev</a></h5>
-      <h6 class="card-subtitle">Blockchain TechLead</h6>
-      
-      <ul class="network-icon" aria-hidden="true">
-        
-          
-          
-          
-            
-          
-          
-          
-          
-          
-            
-          
-          <li>
-            <a href="https://www.linkedin.com/in/kalaninja/" target="_blank" rel="noopener">
-              <i class="fab fa-linkedin"></i>
-            </a>
-          </li>
-        
-          
-          
-          
-            
-          
-          
-          
-          
-          
-            
-          
-          <li>
-            <a href="https://www.facebook.com/kalaninja" target="_blank" rel="noopener">
-              <i class="fab fa-facebook"></i>
-            </a>
-          </li>
-        
-          
-          
-          
-            
-          
-          
-          
-          
-          
-            
-          
-          <li>
-            <a href="https://github.com/kalaninja" target="_blank" rel="noopener">
-              <i class="fab fa-github"></i>
-            </a>
-          </li>
-        
-          
-          
-          
-            
-          
-          
-          
-          
-          
-            
-          
-          <li>
-            <a href="https://vk.com/kalan" target="_blank" rel="noopener">
-              <i class="fab fa-vk"></i>
-            </a>
-          </li>
-        
-          
-          
-          
-            
-          
-          
-          
-          
-          
-          <li>
-            <a href="mailto:kalansoft@gmail.com" >
-              <i class="fas fa-envelope"></i>
-            </a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-
-
-      
-      
-    
-
-    
-
-    
 <section id="comments">
   
     
@@ -1373,6 +1606,13 @@ public static void Main(string[] args)
 
 
 
+
+
+
+
+
+
+
   </div>
 </article>
 
@@ -1381,59 +1621,51 @@ public static void Main(string[] args)
     
     
     
-    <script src="/js/mathjax-config.js"></script>
-    
-
-    
-    
-    
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/instant.page/5.1.0/instantpage.min.js" integrity="sha512-1+qUtKoh9XZW7j+6LhRMAyOrgSQKenQ4mluTR+cvxXjP1Z54RxZuzstR/H9kgPXQsVB8IW7DMDFUJpzLjvhGSQ==" crossorigin="anonymous"></script>
 
       
 
       
         
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js" integrity="sha256-aYTdUrn6Ow1DDgh5JTc3aDGnnju48y/1c8s1dgkYPQ8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/highlight.min.js" integrity="sha512-7t8APmYpzEsZP7CYoA7RfMPV9Bb+PJHa9x2WiUnDXZx3XHveuyWUtvNOexhkierl5flZ3tr92dP1mMS+SGlD+A==" crossorigin="anonymous"></script>
         
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/languages/r.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/r.min.js"></script>
         
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/languages/go.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/go.min.js"></script>
         
       
 
-      
-      
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_CHTML-full" integrity="sha256-GhM+5JHb6QUzOQPXSJLEWP7R73CbkisjzK5Eyij4U9w=" crossorigin="anonymous" async></script>
-      
     
 
     
     
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js" integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
     
 
     
     
-    <script>hljs.initHighlightingOnLoad();</script>
+    <script>const code_highlighting = true;</script>
     
 
+    
+    
+    
+    
     
     
     <script>
-      const search_index_filename = "/index.json";
-      const i18n = {
-        'placeholder': "Search...",
-        'results': "results found",
-        'no_results': "No results found"
-      };
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
       const content_type = {
         'post': "Posts",
         'project': "Projects",
         'publication' : "Publications",
-        'talk' : "Talks"
+        'talk' : "Talks",
+        'slides' : "Slides"
         };
     </script>
     
@@ -1467,6 +1699,12 @@ public static void Main(string[] args)
 
     
     
+
+    
+    
+
+    
+    
     <script id="dsq-count-scr" src="https://kalan-blog.disqus.com/count.js" async></script>
     
 
@@ -1484,7 +1722,7 @@ public static void Main(string[] args)
     
     
     
-    <script src="/js/academic.min.130521ecfc6f534c52c158217bbff718.js"></script>
+    <script src="/js/academic.min.3b2b658c61ebd725bd5fc606c89fe44c.js"></script>
 
     
 
@@ -1493,21 +1731,33 @@ public static void Main(string[] args)
 
 
 
+  
   
   <div class="container">
     <footer class="site-footer">
   
 
   <p class="powered-by">
-    &copy; 2019 Alexander Kalankhodzhaev &middot; 
+    © 2020 Alexander Kalankhodzhaev
+  </p>
 
-    Powered by the
-    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
-    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+  
+  
+
+
+
+
+
+
+  <p class="powered-by">
+    
+    Published with
+    <a href="https://wowchemy.com" target="_blank" rel="noopener">Wowchemy Website Builder</a>
+    
 
     
     <span class="float-right" aria-hidden="true">
-      <a href="#" id="back_to_top">
+      <a href="#" class="back-to-top">
         <span class="button_icon">
           <i class="fas fa-chevron-up fa-2x"></i>
         </span>

@@ -5,9 +5,9 @@
     <link>/project/</link>
       <atom:link href="/project/index.xml" rel="self" type="application/rss+xml" />
     <description>Projects</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2019 Alexander Kalankhodzhaev</copyright><lastBuildDate>Sat, 12 Oct 2019 21:14:41 +0300</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2020 Alexander Kalankhodzhaev</copyright><lastBuildDate>Sat, 12 Oct 2019 21:14:41 +0300</lastBuildDate>
     <image>
-      <url>/img/icon-192.png</url>
+      <url>/images/icon_hu45eb22dba3a74074a63777c2344b71bd_547989_512x512_fill_lanczos_center_2.png</url>
       <title>Projects</title>
       <link>/project/</link>
     </image>
@@ -18,7 +18,6 @@
       <pubDate>Sat, 12 Oct 2019 21:14:41 +0300</pubDate>
       <guid>/project/go-linq/</guid>
       <description>&lt;p&gt;A powerful language integrated query (LINQ) library for Go.&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;Written in vanilla Go, no dependencies!&lt;/li&gt;
 &lt;li&gt;Complete lazy evaluation with iterator pattern&lt;/li&gt;

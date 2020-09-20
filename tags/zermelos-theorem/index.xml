@@ -5,9 +5,9 @@
     <link>/tags/zermelos-theorem/</link>
       <atom:link href="/tags/zermelos-theorem/index.xml" rel="self" type="application/rss+xml" />
     <description>zermelo&#39;s theorem</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2019 Alexander Kalankhodzhaev</copyright><lastBuildDate>Tue, 02 May 2017 13:15:00 +0300</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2020 Alexander Kalankhodzhaev</copyright><lastBuildDate>Tue, 02 May 2017 13:15:00 +0300</lastBuildDate>
     <image>
-      <url>/img/icon-192.png</url>
+      <url>/images/icon_hu45eb22dba3a74074a63777c2344b71bd_547989_512x512_fill_lanczos_center_2.png</url>
       <title>zermelo&#39;s theorem</title>
       <link>/tags/zermelos-theorem/</link>
     </image>
@@ -18,25 +18,18 @@
       <pubDate>Tue, 02 May 2017 13:15:00 +0300</pubDate>
       <guid>/post/finding-winning-strategies/</guid>
       <description>&lt;p&gt;This time I want to show how to &lt;em&gt;solve a game&lt;/em&gt; using a perfect play which means being able to predict the outcome of the game from any position. The perfect play is the strategy that leads to the best possible outcome for that player regardless of the response by the opponent. For the illustration I have selected two children’s games with stones. The rules are very simple. There is a pile of 99 stones. Two player take &lt;strong&gt;n&lt;/strong&gt; stones out of the pile in turn. The one who takes the last stone is the winner. In each game &lt;strong&gt;n&lt;/strong&gt; is different:&lt;/p&gt;
-
 &lt;ol&gt;
 &lt;li&gt;it is in the closed interval between 1 and 3&lt;/li&gt;
 &lt;li&gt;power of 2&lt;/li&gt;
 &lt;/ol&gt;
-
 &lt;p&gt;Let’s find out how to always win these kind of games.&lt;/p&gt;
-
 &lt;h2 id=&#34;problem-identification&#34;&gt;Problem identification&lt;/h2&gt;
-
 &lt;p&gt;As both games are very similar I will talk about them as a single one. This is a game of two players with only two possible outcomes; either one or the other of the players wins, no draw is possible. So, this is a strictly competitive finite two-person game. As players move in turns and each player at all times is aware of all the events that have previously occurred, this is a game of perfect information. According to Zermelo’s theorem&lt;/p&gt;
-
 &lt;blockquote&gt;
 &lt;p&gt;Any finite two-person game of perfect information in which the players move alternatingly and in which chance does not affect the decision making process, if the game cannot end in a draw, then one of the two players must have a winning strategy&lt;/p&gt;
 &lt;/blockquote&gt;
-
 &lt;h2 id=&#34;the-algorithm&#34;&gt;The algorithm&lt;/h2&gt;
-
-&lt;p&gt;Now that we know the type of problem we are dealing with this leads us to the main question of how to analyze the game. The answer is to model the game, which is to build a tree of all possible decisions made by both players over time. This tree is usually called a &lt;em&gt;game tree&lt;/em&gt; whose nodes are positions in a game and whose edges are moves. With this tree it is possible to solve the game using backward induction. Backward induction is an extremely powerful technique that has been applied not just to games but also to many other problems in computer science. It is sometimes known as Zermelo’s algorithm, named after Professor Ernst Zermelo, who used it to analyze the game of chess. The idea is very simple: to traverse the game tree in reverse order from leaves (endgame states) to the root (initial state) each time assuming the current move-making player is choosing what is best for himself. Here is a small example. Let’s assume that we are playing a television game show quiz. There is given a set of possible subjects, e.g. { Algebra, Biology, Chemistry, Drama}. Each participant in turn chooses a subject that he doesn’t want to answer and it disappears from the list. For example, there are 3 players with their own preferences (in descending order):
+&lt;p&gt;Now that we know the type of problem we are dealing with this leads us to the main question of how to analyze the game. The answer is to model the game, which is to build a tree of all possible decisions made by both players over time. This tree is usually called a &lt;em&gt;game tree&lt;/em&gt; whose nodes are positions in a game and whose edges are moves. With this tree it is possible to solve the game using backward induction. Backward induction is an extremely powerful technique that has been applied not just to games but also to many other problems in computer science. It is sometimes known as Zermelo’s algorithm, named after Professor Ernst Zermelo, who used it to analyze the game of chess. The idea is very simple: to traverse the game tree in reverse order from leaves (endgame states) to the root (initial state) each time assuming the current move-making player is choosing what is best for himself. Here is a small example. Let’s assume that we are playing a television game show quiz. There is given a set of possible subjects, e.g. { Algebra, Biology, Chemistry, Drama}. Each participant in turn chooses a subject that he doesn’t want to answer and it disappears from the list. For example, there are 3 players with their own preferences (in descending order):&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr style=&#34;height: 24px;&#34;&gt;
@@ -67,20 +60,16 @@
 &lt;td style=&#34;height: 24px; text-align: center;&#34;&gt;A&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
-&lt;/table&gt;&lt;/p&gt;
-
+&lt;/table&gt;
 &lt;h3 id=&#34;the-straightforward-way&#34;&gt;The straightforward way&lt;/h3&gt;
-
 &lt;p&gt;First of all lets try to solve the situation in a straightforward manner. So, &lt;strong&gt;Player 1&lt;/strong&gt; is getting rid of subject &lt;strong&gt;D&lt;/strong&gt;, &lt;strong&gt;Player 2&lt;/strong&gt; – &lt;strong&gt;B&lt;/strong&gt; (&lt;strong&gt;D&lt;/strong&gt; is already removed), &lt;strong&gt;Player 3&lt;/strong&gt; – &lt;strong&gt;A&lt;/strong&gt;. The result is – &lt;strong&gt;C&lt;/strong&gt; (Chemistry), which is not so good for &lt;strong&gt;Player 1&lt;/strong&gt;. Now let’s solve it the other way.&lt;/p&gt;
-
 &lt;h3 id=&#34;backward-induction&#34;&gt;Backward induction&lt;/h3&gt;
-
-&lt;p&gt;First we need to build a complete game tree. &lt;a href=&#34;./gametree.svg&#34;&gt;&lt;img src=&#34;./gametree.svg&#34; alt=&#34;&#34; /&gt;&lt;/a&gt; Then, assuming the fact that &lt;strong&gt;Player 3&lt;/strong&gt;, who is making the last choice, always chooses what is best for himself, the tree can be reduced to the following &lt;a href=&#34;./gametree1.svg&#34;&gt;&lt;img src=&#34;./gametree1.svg&#34; alt=&#34;&#34; /&gt;&lt;/a&gt; The same assumption for &lt;strong&gt;Player 2&lt;/strong&gt; &lt;a href=&#34;./gametree2.svg&#34;&gt;&lt;img src=&#34;./gametree2.svg&#34; alt=&#34;&#34; /&gt;&lt;/a&gt; When the tree is fully reduced we can see that &lt;strong&gt;Player 1&lt;/strong&gt; is really choosing only between &lt;strong&gt;B&lt;/strong&gt; and &lt;strong&gt;C&lt;/strong&gt; and furthermore if he wants to get a better result in the end he has to sacrifice a better option in the beginning.&lt;/p&gt;
-
+&lt;p&gt;First we need to build a complete game tree. 
+&lt;a href=&#34;./gametree.svg&#34;&gt;&lt;img src=&#34;./gametree.svg&#34; alt=&#34;&#34;&gt;&lt;/a&gt; Then, assuming the fact that &lt;strong&gt;Player 3&lt;/strong&gt;, who is making the last choice, always chooses what is best for himself, the tree can be reduced to the following 
+&lt;a href=&#34;./gametree1.svg&#34;&gt;&lt;img src=&#34;./gametree1.svg&#34; alt=&#34;&#34;&gt;&lt;/a&gt; The same assumption for &lt;strong&gt;Player 2&lt;/strong&gt; 
+&lt;a href=&#34;./gametree2.svg&#34;&gt;&lt;img src=&#34;./gametree2.svg&#34; alt=&#34;&#34;&gt;&lt;/a&gt; When the tree is fully reduced we can see that &lt;strong&gt;Player 1&lt;/strong&gt; is really choosing only between &lt;strong&gt;B&lt;/strong&gt; and &lt;strong&gt;C&lt;/strong&gt; and furthermore if he wants to get a better result in the end he has to sacrifice a better option in the beginning.&lt;/p&gt;
 &lt;h2 id=&#34;coding&#34;&gt;Coding&lt;/h2&gt;
-
 &lt;p&gt;Now back to our problem. Let’s code the backward induction algorithm using java this time. First, we need to store the changing state of the game.&lt;/p&gt;
-
 &lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;import java.util.ArrayList;
 import java.util.List;
 
@@ -113,9 +102,7 @@ public class State {
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-
 &lt;p&gt;Then the game tree. Each node contains the current state, boolean field that shows if the current player is able to win in the current state, and the next state that will come after the chosen move.&lt;/p&gt;
-
 &lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public class Node {
     private State state;
     private boolean currentPlayerWins;
@@ -153,9 +140,7 @@ public class State {
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-
 &lt;p&gt;The last thing that we need is the worker that will build and reduce the game tree. Here we need to do some tricks. First of all don’t try to store the complete tree in memory, because you will need to allocate &lt;strong&gt;56343125079040471808818753&lt;/strong&gt; nodes. I bet that you will run out of memory pretty soon. Instead, we might generate only the winning subtrees, because a single winning subnode is enough to treat the previous node as winning. Another thing is that though the amount of nodes is enormous, the amount of possible states is limited to between 1 and 99, and no matter how you get to it either straight from 99 to 96, or following the path 99 -&amp;gt; 98 -&amp;gt; 96, if the current player is able to win from state 96 in the first branch, he wins from this state in the second. So, cache can be used to store results for states that have already been calculated.&lt;/p&gt;
-
 &lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -198,9 +183,7 @@ public class TreeWorker {
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-
 &lt;p&gt;For the second game (with powers of 2) we need to slightly modify the &lt;code&gt;State&lt;/code&gt; class&lt;/p&gt;
-
 &lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;import java.util.ArrayList;
 import java.util.List;
 
@@ -240,21 +223,15 @@ public class State {
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-
 &lt;h2 id=&#34;the-result&#34;&gt;The result&lt;/h2&gt;
-
 &lt;p&gt;Now run the code&lt;/p&gt;
-
 &lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;TreeWorker worker = new TreeWorker();
 Node root = worker.generateTree(new State(99));
 
 System.out.println(root);
 &lt;/code&gt;&lt;/pre&gt;
-
 &lt;p&gt;This will give an output similar to this for the first game: &lt;code&gt;{99 | true} -&amp;gt; {96 | false} -&amp;gt; {93 | true} -&amp;gt; {92 | false} -&amp;gt; {91 | true} -&amp;gt; {88 | false} -&amp;gt; {85 | true} -&amp;gt; {84 | false} -&amp;gt; {81 | true} -&amp;gt; {80 | false} -&amp;gt; {77 | true} -&amp;gt; {76 | false} -&amp;gt; {75 | true} -&amp;gt; {72 | false} -&amp;gt; {69 | true} -&amp;gt; {68 | false} -&amp;gt; {67 | true} -&amp;gt; {64 | false} -&amp;gt; {63 | true} -&amp;gt; {60 | false} -&amp;gt; {58 | true} -&amp;gt; {56 | false} -&amp;gt; {55 | true} -&amp;gt; {52 | false} -&amp;gt; {51 | true} -&amp;gt; {48 | false} -&amp;gt; {46 | true} -&amp;gt; {44 | false} -&amp;gt; {42 | true} -&amp;gt; {40 | false} -&amp;gt; {37 | true} -&amp;gt; {36 | false} -&amp;gt; {33 | true} -&amp;gt; {32 | false} -&amp;gt; {30 | true} -&amp;gt; {28 | false} -&amp;gt; {25 | true} -&amp;gt; {24 | false} -&amp;gt; {21 | true} -&amp;gt; {20 | false} -&amp;gt; {18 | true} -&amp;gt; {16 | false} -&amp;gt; {13 | true} -&amp;gt; {12 | false} -&amp;gt; {11 | true} -&amp;gt; {8 | false} -&amp;gt; {7 | true} -&amp;gt; {4 | false} -&amp;gt; {3 | true}&lt;/code&gt; So, it seems that the first player has the winning strategy and will win from the initial position if he performs a perfect play. In this case the second player is desperate – having &lt;code&gt;false&lt;/code&gt; in each of his moves shows the absence of moves leading to a victory. It is not hard to notice the pattern. Each time the second player takes 1 stone out of the pile, the first takes out 3 stones; for 2 stones – 2 stones; and for 3 stones – 1 stone. So the idea is quite clear – to win one has to keep the number of stones divisible by 4. For the second game the output is somewhat similar to the following: &lt;code&gt;{99 | false} -&amp;gt; {98 | true} -&amp;gt; {66 | false} -&amp;gt; {58 | true} -&amp;gt; {54 | false} -&amp;gt; {46 | true} -&amp;gt; {30 | false} -&amp;gt; {14 | true} -&amp;gt; {6 | false} -&amp;gt; {2 | true}&lt;/code&gt; So, here the situation is totally different and the first player cannot win if both sides perform a perfect play. The strategy is to keep the number of stones divisible by 3.&lt;/p&gt;
-
 &lt;h2 id=&#34;outro&#34;&gt;Outro&lt;/h2&gt;
-
 &lt;p&gt;Zermelo’s backward induction algorithm is one of the cornerstone algorithms in game theory. It is a classic example of dynamic programming, in which a solution to an overall problem is systematically built up from the solutions to smaller problems. It can be used to analyze different games from tic-tac-toe to chess. So, try it your own!&lt;/p&gt;</description>
     </item>
     

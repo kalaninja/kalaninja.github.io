@@ -5,9 +5,9 @@
     <link>/tags/subset-sum-problem/</link>
       <atom:link href="/tags/subset-sum-problem/index.xml" rel="self" type="application/rss+xml" />
     <description>subset sum problem</description>
-    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2019 Alexander Kalankhodzhaev</copyright><lastBuildDate>Sat, 30 Jul 2016 23:21:00 +0300</lastBuildDate>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator><language>en-us</language><copyright>© 2020 Alexander Kalankhodzhaev</copyright><lastBuildDate>Sat, 30 Jul 2016 23:21:00 +0300</lastBuildDate>
     <image>
-      <url>/img/icon-192.png</url>
+      <url>/images/icon_hu45eb22dba3a74074a63777c2344b71bd_547989_512x512_fill_lanczos_center_2.png</url>
       <title>subset sum problem</title>
       <link>/tags/subset-sum-problem/</link>
     </image>
@@ -17,15 +17,11 @@
       <link>/post/solving-a-payment-without-change-problem/</link>
       <pubDate>Sat, 30 Jul 2016 23:21:00 +0300</pubDate>
       <guid>/post/solving-a-payment-without-change-problem/</guid>
-      <description>&lt;p&gt;I have come across an interesting problem. A customer is standing at the checkout of a grocery store with his purchases and is asked to pay the exact amount without creating any change. There are notes of various denominations  in his pockets in random order (note denomination is not tied to a real bank notes, the only boundary is that it is an integer greater than 0). The objective is to pick up the necessary sum or indicate that it is not possible. If several solutions are possible then any of them is acceptable. So, let&#39;s solve it using C# language.&lt;/p&gt;
-
-&lt;p&gt;This problem is a special case of the knapsack problem (given a set of items, each with a weight and a value, determine the number of each item to include in a collection so that the total weight is less than or equal to a given limit and the total value is as large as possible) and is equivalent to a subset sum problem (finding a non-empty subset whose sum is zero) with an extra condition that each element of the set is strictly greater than zero. As it is an NP-complete problem I can think of 2 possible ways to solve it. Let&#39;s first discuss the recursive approach and then improve it using dynamic programming.&lt;/p&gt;
-
+      <description>&lt;p&gt;I have come across an interesting problem. A customer is standing at the checkout of a grocery store with his purchases and is asked to pay the exact amount without creating any change. There are notes of various denominations  in his pockets in random order (note denomination is not tied to a real bank notes, the only boundary is that it is an integer greater than 0). The objective is to pick up the necessary sum or indicate that it is not possible. If several solutions are possible then any of them is acceptable. So, let&amp;rsquo;s solve it using C# language.&lt;/p&gt;
+&lt;p&gt;This problem is a special case of the knapsack problem (given a set of items, each with a weight and a value, determine the number of each item to include in a collection so that the total weight is less than or equal to a given limit and the total value is as large as possible) and is equivalent to a subset sum problem (finding a non-empty subset whose sum is zero) with an extra condition that each element of the set is strictly greater than zero. As it is an NP-complete problem I can think of 2 possible ways to solve it. Let&amp;rsquo;s first discuss the recursive approach and then improve it using dynamic programming.&lt;/p&gt;
 &lt;h2 id=&#34;recursive-approach&#34;&gt;Recursive Approach&lt;/h2&gt;
-
-&lt;p&gt;This is the most naive algorithm. For every element in the set there are two options, either we will include that element in the subset or we won’t include it. Then cycle through all these subsets and, for every one of them, check if the subset sum equals the right number. This solution is quite similar to &lt;em&gt;generating all strings of n bits&lt;/em&gt; and its time complexity is as high as&lt;em&gt; O(n*2n)&lt;/em&gt;, since there are &lt;em&gt;2n&lt;/em&gt; subsets and for each subset we need to sum &lt;em&gt;n&lt;/em&gt; elements.&lt;/p&gt;
-
-&lt;p&gt;Let&#39;s improve it a bit. First optimization comes from the idea that we do not really need to calculate all the possible subsets and calculate all the sums afterward. Instead we can merge these two steps in a single operation and have a means to restore the set that produced the right sum. Having a set &lt;em&gt;A&lt;/em&gt; of elements &lt;em&gt;{a1, a2, a3 ... an}&lt;/em&gt; let&#39;s build a tree of all possible sums until we find a target sum &lt;em&gt;S&lt;/em&gt;. Let&#39;s start with adding 0 to the tree and then adding each element of &lt;em&gt;A&lt;/em&gt; to all the elements in this tree.
+&lt;p&gt;This is the most naive algorithm. For every element in the set there are two options, either we will include that element in the subset or we won’t include it. Then cycle through all these subsets and, for every one of them, check if the subset sum equals the right number. This solution is quite similar to &lt;em&gt;generating all strings of n bits&lt;/em&gt; and its time complexity is as high as_ O(n*2n)_, since there are _2n_ subsets and for each subset we need to sum _n_ elements.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s improve it a bit. First optimization comes from the idea that we do not really need to calculate all the possible subsets and calculate all the sums afterward. Instead we can merge these two steps in a single operation and have a means to restore the set that produced the right sum. Having a set &lt;em&gt;A&lt;/em&gt; of elements &lt;em&gt;{a1, a2, a3 &amp;hellip; an}&lt;/em&gt; let&amp;rsquo;s build a tree of all possible sums until we find a target sum &lt;em&gt;S&lt;/em&gt;. Let&amp;rsquo;s start with adding 0 to the tree and then adding each element of &lt;em&gt;A&lt;/em&gt; to all the elements in this tree.&lt;/p&gt;
 &lt;table style=&#34;width: 548px;&#34;&gt;
 &lt;tbody&gt;
 &lt;tr style=&#34;height: 24px;&#34;&gt;
@@ -85,12 +81,9 @@
 &lt;td style=&#34;text-align: center; width: 191px; height: 24px;&#34;&gt;&lt;em&gt;(((0+a&lt;sub&gt;1&lt;/sub&gt;)+a&lt;sub&gt;2&lt;/sub&gt;)+a&lt;sub&gt;3&lt;/sub&gt;)+…+a&lt;sub&gt;n&lt;/sub&gt;&lt;/em&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
-&lt;/table&gt;&lt;/p&gt;
-
-&lt;p&gt;As you can see now, no extra step is needed to sum each subset, instead each level of the tree uses sums from the previous tiers. So, there is 1 sum for the 1st element, 2 sums for the 2nd, 4 sums for the 3rd, 8 sums for the 4th, etc. This forms a geometrical progression with the total of &lt;span  class=&#34;math&#34;&gt;\(\frac {1(1-2^n)}{1-2} = 2^n-1\)&lt;/span&gt; elements. Now this method&#39;s complexity is &lt;em&gt;O(2n)&lt;/em&gt;.&lt;/p&gt;
-
+&lt;/table&gt;
+&lt;p&gt;As you can see now, no extra step is needed to sum each subset, instead each level of the tree uses sums from the previous tiers. So, there is 1 sum for the 1st element, 2 sums for the 2nd, 4 sums for the 3rd, 8 sums for the 4th, etc. This forms a geometrical progression with the total of $$\frac {1(1-2^n)}{1-2} = 2^n-1$$ elements. Now this method&amp;rsquo;s complexity is &lt;em&gt;O(2n)&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;Secondly, we can utilize the boundary condition. As we know that all the elements in the set are positive, it is obvious that adding a new element to the set only increases the current sum. So, if the current sum of the node is higher than the target sum this solution becomes rejected and is not used in further computations. This decreases the complexity to &lt;em&gt;O(2n) in the worst case&lt;/em&gt;. Also we can benefit from sorting the set in the descending order, because this will help to reject more solutions in the early stage. Here is the code:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code class=&#34;language-csharp&#34;&gt;public static List&amp;lt;int&amp;gt; FindRecursive(int[] set, int targetSum, int currentSum, int currentIndex)
 {
 	for (var i = currentIndex; i &amp;lt; set.Length; i++)
@@ -129,22 +122,17 @@ public static void Main(string[] args)
 		result?.Select(x =&amp;gt; x.ToString()).Aggregate((x, y) =&amp;gt; x + &amp;quot;,&amp;quot; + y) ?? &amp;quot;null&amp;quot;);
 }
 &lt;/code&gt;&lt;/pre&gt;
-
 &lt;h2 id=&#34;dynamic-programming&#34;&gt;Dynamic programming&lt;/h2&gt;
-
 &lt;p&gt;This problem can be solved in pseudo-polynomial time using dynamic programming (a method for solving a complex problem by breaking it down into a collection of simpler subproblems). Define the boolean-valued function &lt;em&gt;Q(n, s)&lt;/em&gt; so that:&lt;/p&gt;
-
 &lt;ul&gt;
 &lt;li&gt;Q(n, 0) = true (return empty set)&lt;/li&gt;
-&lt;li&gt;Q(0, s) = false, if s &amp;gt; 0 (you can&#39;t pick a positive sum with an empty set)&lt;/li&gt;
+&lt;li&gt;Q(0, s) = false, if s &amp;gt; 0 (you can&amp;rsquo;t pick a positive sum with an empty set)&lt;/li&gt;
 &lt;/ul&gt;
-
 &lt;p&gt;Then all other cases are: &lt;em&gt;Q(n, s) = Q(n-1, s) || Q(n-1, s-aₙ)&lt;/em&gt;. The only thing left is to fill the array of values of Q(i, s) for 1 ≤ i ≤ n using a simple recursion. The complexity of this method is &lt;em&gt;O(n*s)&lt;/em&gt; which is linear.&lt;/p&gt;
-
-&lt;p&gt;Let&#39;s see how it works in the example: Given a set A {1, 2, 5, 7}, is there subset whose sum is 9?&lt;/p&gt;
-
+&lt;p&gt;Let&amp;rsquo;s see how it works in the example: Given a set A {1, 2, 5, 7}, is there subset whose sum is 9?&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;p&gt;Sum of 0 can be picked for any n with an empty set, the only sum that can be picked with an empty set is 0.
+&lt;li&gt;Sum of 0 can be picked for any n with an empty set, the only sum that can be picked with an empty set is 0.&lt;/li&gt;
+&lt;/ol&gt;
 &lt;table width=&#34;681&#34;&gt;
 &lt;tbody&gt;
 &lt;tr&gt;
@@ -226,9 +214,10 @@ public static void Main(string[] args)
 &lt;td style=&#34;text-align: center; width: 58px;&#34;&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
-&lt;/table&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Adding 1 to the set we can now pick a sum of 1.
+&lt;/table&gt;
+&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;Adding 1 to the set we can now pick a sum of 1.&lt;/li&gt;
+&lt;/ol&gt;
 &lt;table width=&#34;681&#34;&gt;
 &lt;tbody&gt;
 &lt;tr&gt;
@@ -310,9 +299,10 @@ public static void Main(string[] args)
 &lt;td style=&#34;text-align: center; width: 58px;&#34;&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
-&lt;/table&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Adding 2 to the set we can now pick a sum of 2 and 3 and we already can pick 1.
+&lt;/table&gt;
+&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;Adding 2 to the set we can now pick a sum of 2 and 3 and we already can pick 1.&lt;/li&gt;
+&lt;/ol&gt;
 &lt;table width=&#34;681&#34;&gt;
 &lt;tbody&gt;
 &lt;tr&gt;
@@ -394,9 +384,10 @@ public static void Main(string[] args)
 &lt;td style=&#34;text-align: center; width: 58px;&#34;&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
-&lt;/table&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;Complete the table. Here is the answer shown in red.
+&lt;/table&gt;
+&lt;ol start=&#34;4&#34;&gt;
+&lt;li&gt;Complete the table. Here is the answer shown in red.&lt;/li&gt;
+&lt;/ol&gt;
 &lt;table width=&#34;681&#34;&gt;
 &lt;tbody&gt;
 &lt;tr&gt;
@@ -478,9 +469,10 @@ public static void Main(string[] args)
 &lt;td style=&#34;width: 58px; text-align: center; background-color: #ed8585;&#34;&gt;true&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
-&lt;/table&gt;&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;How to restore the set. We got the correct answer after adding 7 to the set, so let&#39;s remove it: 9-7=2. We got a sum of 2 after adding 2 to the set, so let&#39;s remove it. Now we are at the sum of 0, so the restoration is over. The track is shown in yellow.
+&lt;/table&gt;
+&lt;ol start=&#34;5&#34;&gt;
+&lt;li&gt;How to restore the set. We got the correct answer after adding 7 to the set, so let&amp;rsquo;s remove it: 9-7=2. We got a sum of 2 after adding 2 to the set, so let&amp;rsquo;s remove it. Now we are at the sum of 0, so the restoration is over. The track is shown in yellow.&lt;/li&gt;
+&lt;/ol&gt;
 &lt;table width=&#34;681&#34;&gt;
 &lt;tbody&gt;
 &lt;tr&gt;
@@ -562,11 +554,8 @@ public static void Main(string[] args)
 &lt;td style=&#34;width: 58px; text-align: center; background-color: #f0e5a8;&#34;&gt;true&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
-&lt;/table&gt;&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
+&lt;/table&gt;
 &lt;p&gt;And finally, here is the code:&lt;/p&gt;
-
 &lt;pre&gt;&lt;code class=&#34;language-csharp&#34;&gt;public static List&amp;lt;int&amp;gt; FindDP(int[] set, int sum)
 {
 	var solution = new bool[set.Length + 1, sum + 1];
@@ -612,10 +601,8 @@ public static void Main(string[] args)
 	return null;
 }
 &lt;/code&gt;&lt;/pre&gt;
-
 &lt;h2 id=&#34;ps&#34;&gt;PS&lt;/h2&gt;
-
-&lt;p&gt;Solving this task I&#39;ve started thinking about making a github repo for such algorithms, so that one can easily find an implementation of a needed algorithm in c# or simply use it without needing to reinvent the wheel.&lt;/p&gt;</description>
+&lt;p&gt;Solving this task I&amp;rsquo;ve started thinking about making a github repo for such algorithms, so that one can easily find an implementation of a needed algorithm in c# or simply use it without needing to reinvent the wheel.&lt;/p&gt;</description>
     </item>
     
   </channel>

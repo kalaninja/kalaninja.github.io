@@ -1,13 +1,15 @@
-<!DOCTYPE html>
-<html lang="en-us">
+<!DOCTYPE html><html lang="en-us" >
 
 <head>
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="generator" content="Source Themes Academic 4.5.0">
+  <meta name="generator" content="Source Themes Academic 4.8.0">
 
+  
+
+  
   
 
   
@@ -21,20 +23,36 @@
   
   
 
-  <meta name="author" content="Alexander Kalankhodzhaev">
+  
 
   
   
   
     
   
-  <meta name="description" content="About a month ago we welcomed a new developer to our go-linq maintainers team cleitonmarx (Cleiton Marques) who introduced an interesting pattern for emulating generics in Go and became the main show-maker of the third version of the library. Here is a small story of how the generics behavior was emulated in go-linq.">
+  <meta name="description" content="About a month ago we welcomed a new developer to our go-linq maintainers team 
+cleitonmarx (Cleiton Marques) who introduced an interesting pattern for emulating generics in Go and became the main show-maker of the third version of the library. Here is a small story of how the generics behavior was emulated in go-linq.">
 
   
   <link rel="alternate" hreflang="en-us" href="/post/go-linq-v3-0-emulating-generics-in-go/">
 
   
 
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
 
   
   
@@ -44,12 +62,15 @@
 
   
   
+
+  
+  
   
   
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha256-FMvZuGapsJLjouA6k7Eo2lusoAX9i0ShlWFG6qt7SLc=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
 
     
     
@@ -60,59 +81,222 @@
       
       
         
-          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css" crossorigin="anonymous" title="hl-light">
-          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" disabled>
         
       
     
 
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.css" integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ==" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.css" integrity="sha256-SHMGCYmST46SoyGgo4YR/9AlK1vf3ff84Aq9yK4hdqM=" crossorigin="anonymous">
     
 
     
 
-  
-
-  
-  
-  
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto:400,400italic,700%7CRoboto+Mono&display=swap">
-  
-
-  
-  
-  
-  <link rel="stylesheet" href="/css/academic.min.986fd6dcc6a9841b1bfe2809c80999ba.css">
-
-  
-
-  
-  
-    <script>
-      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-      ga('create', 'UA-80967351-1', 'auto');
+    
+    
       
-      ga('require', 'eventTracker');
-      ga('require', 'outboundLinkTracker');
-      ga('require', 'urlChangeTracker');
-      ga('send', 'pageview');
-    </script>
-    <script async src="https://www.google-analytics.com/analytics.js"></script>
+
+      
+      
+
+      
     
-    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+      
+
+      
+      
+
+      
     
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.1.2/lazysizes.min.js" integrity="sha256-Md1qLToewPeKjfAHU1zyPwOutccPAm5tahnaw7Osw0A=" crossorigin="anonymous" async></script>
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+        
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+      
+
+      
+      
+
+      
+    
+
+  
+
+  
+  
+  
+    
+      
+      
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto:400,400italic,700%7CRoboto+Mono&display=swap">
+    
+  
+
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.css">
+
+  
+
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-80967351-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', 'UA-80967351-1', {});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
+  
+
+
   
   
 
   
 
   <link rel="manifest" href="/index.webmanifest">
-  <link rel="icon" type="image/png" href="/img/icon-32.png">
-  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+  <link rel="icon" type="image/png" href="/images/icon_hu45eb22dba3a74074a63777c2344b71bd_547989_32x32_fill_lanczos_center_2.png">
+  <link rel="apple-touch-icon" type="image/png" href="/images/icon_hu45eb22dba3a74074a63777c2344b71bd_547989_192x192_fill_lanczos_center_2.png">
 
   <link rel="canonical" href="/post/go-linq-v3-0-emulating-generics-in-go/">
 
+  
+  
+  
   
   
   
@@ -126,8 +310,9 @@
   <meta property="og:site_name" content="kalan&#39;s blog">
   <meta property="og:url" content="/post/go-linq-v3-0-emulating-generics-in-go/">
   <meta property="og:title" content="go-linq v3.0: Emulating generics in Go | kalan&#39;s blog">
-  <meta property="og:description" content="About a month ago we welcomed a new developer to our go-linq maintainers team cleitonmarx (Cleiton Marques) who introduced an interesting pattern for emulating generics in Go and became the main show-maker of the third version of the library. Here is a small story of how the generics behavior was emulated in go-linq."><meta property="og:image" content="/img/icon-192.png">
-  <meta property="twitter:image" content="/img/icon-192.png"><meta property="og:locale" content="en-us">
+  <meta property="og:description" content="About a month ago we welcomed a new developer to our go-linq maintainers team 
+cleitonmarx (Cleiton Marques) who introduced an interesting pattern for emulating generics in Go and became the main show-maker of the third version of the library. Here is a small story of how the generics behavior was emulated in go-linq."><meta property="og:image" content="/images/icon_hu45eb22dba3a74074a63777c2344b71bd_547989_512x512_fill_lanczos_center_2.png">
+  <meta property="twitter:image" content="/images/icon_hu45eb22dba3a74074a63777c2344b71bd_547989_512x512_fill_lanczos_center_2.png"><meta property="og:locale" content="en-us">
   
     
       <meta property="article:published_time" content="2017-02-24T20:37:00&#43;03:00">
@@ -150,19 +335,6 @@
 
 
 
-
-  
-
-
-
-
-
-  
-
-
-
-
-
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -176,20 +348,15 @@
   "datePublished": "2017-02-24T20:37:00+03:00",
   "dateModified": "2017-02-24T20:37:00+03:00",
   
-  "author": {
-    "@type": "Person",
-    "name": "Alexander Kalankhodzhaev"
-  },
-  
   "publisher": {
     "@type": "Organization",
     "name": "kalan's blog",
     "logo": {
       "@type": "ImageObject",
-      "url": "/img/icon-512.png"
+      "url": "/images/icon_hu45eb22dba3a74074a63777c2344b71bd_547989_192x192_fill_lanczos_center_2.png"
     }
   },
-  "description": "\u003cp\u003eAbout a month ago we welcomed a new developer to our go-linq maintainers team \u003ca href=\"https://github.com/cleitonmarx\" target=\"_blank\"\u003ecleitonmarx\u003c/a\u003e (Cleiton Marques) who introduced an interesting pattern for emulating generics in Go and became the main show-maker of the third version of the library. Here is a small story of how the generics behavior was emulated in go-linq.\u003c/p\u003e"
+  "description": "\u003cp\u003eAbout a month ago we welcomed a new developer to our go-linq maintainers team \n\u003ca href=\"https://github.com/cleitonmarx\" target=\"_blank\" rel=\"noopener\"\u003ecleitonmarx\u003c/a\u003e (Cleiton Marques) who introduced an interesting pattern for emulating generics in Go and became the main show-maker of the third version of the library. Here is a small story of how the generics behavior was emulated in go-linq.\u003c/p\u003e"
 }
 </script>
 
@@ -211,7 +378,19 @@
 
 </head>
 
-<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" >
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class=" ">
+
+  
+  
+  
+    <script>window.staDarkLightChooser = true;</script>
+  
+  
+    <script>const isSiteThemeDark = false;</script>
+  
+  
+  <script src="/js/load-theme.js"></script>
 
   <aside class="search-results" id="search">
   <div class="container">
@@ -229,7 +408,7 @@
       <div id="search-box">
         
         <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
-        autocomplete="off" autocorrect="off" spellcheck="false" type="search">
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search" class="form-control">
         
       </div>
 
@@ -246,24 +425,46 @@
 
 
   
-<nav class="navbar navbar-light fixed-top navbar-expand-lg py-0 compensate-for-scrollbar" id="navbar-main">
+
+
+
+
+
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
   <div class="container">
 
     
+    <div class="d-none d-lg-inline-flex">
       <a class="navbar-brand" href="/">kalan&#39;s blog</a>
-      
-      <button type="button" class="navbar-toggler" data-toggle="collapse"
-              data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-        <span><i class="fas fa-bars"></i></span>
-      </button>
-      
+    </div>
+    
 
     
-    <div class="collapse navbar-collapse" id="navbar">
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">kalan&#39;s blog</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-start" id="navbar-content">
 
       
-      
-      <ul class="navbar-nav mr-auto">
+      <ul class="navbar-nav d-md-inline-flex">
         
 
         
@@ -275,16 +476,24 @@
         
 
         
+
         
         
         
         
+
         
           
+            
+            
           
           
             
-          
+            
+            
+              
+            
+            
           
         
 
@@ -304,16 +513,24 @@
         
 
         
+
         
         
         
         
+
         
           
+            
+            
           
           
             
-          
+            
+            
+              
+            
+            
           
         
 
@@ -333,16 +550,24 @@
         
 
         
+
         
         
         
         
+
         
           
+            
+            
           
           
             
-          
+            
+            
+              
+            
+            
           
         
 
@@ -362,16 +587,24 @@
         
 
         
+
         
         
         
         
+
         
           
+            
+            
           
           
             
-          
+            
+            
+              
+            
+            
           
         
 
@@ -383,31 +616,45 @@
         
 
       
+
+        
       </ul>
-      <ul class="navbar-nav ml-auto">
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#" aria-label="Search"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
       
 
-        
+      
+      
+      <li class="nav-item dropdown theme-dropdown">
+        <a href="#" class="nav-link js-theme-selector" data-toggle="dropdown" aria-haspopup="true">
+          <i class="fas fa-palette" aria-hidden="true"></i>
+        </a>
+        <div class="dropdown-menu">
+          <a href="#" class="dropdown-item js-set-theme-light">
+            <span>Light</span>
+          </a>
+          <a href="#" class="dropdown-item js-set-theme-dark">
+            <span>Dark</span>
+          </a>
+          <a href="#" class="dropdown-item js-set-theme-auto">
+            <span>Automatic</span>
+          </a>
+        </div>
+      </li>
+      
 
-        
-        <li class="nav-item">
-          <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
-        </li>
-        
+      
 
-        
+    </ul>
 
-        
-        <li class="nav-item">
-          <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
-        </li>
-        
-
-      </ul>
-
-    </div>
   </div>
 </nav>
+
 
 
   <article class="article">
@@ -437,7 +684,6 @@
 
   
     
-
 
 
 <div class="article-metadata">
@@ -478,8 +724,277 @@
     <i class="fas fa-folder mr-1"></i><a href="/categories/go/">Go</a></span>
   
 
-  
+</div>
+
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="btn-links mb-3">
+  
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+  
+  <a class="btn btn-outline-primary my-1 mr-1" href="/project/go-linq/">
+    Project
+  </a>
+  
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      <p>About a month ago we welcomed a new developer to our go-linq maintainers team 
+<a href="https://github.com/cleitonmarx" target="_blank" rel="noopener">cleitonmarx</a> (Cleiton Marques) who introduced an interesting pattern for emulating generics in Go and became the main show-maker of the third version of the library. Here is a small story of how the generics behavior was emulated in go-linq.</p>
+<h2 id="the-problem">The problem</h2>
+<p>Being one of the most requested features in Go language for years, the question of generics has been discussed up and down and back and forth. For now it seems that they won&rsquo;t appear in the near future. In fact, the language designers aren&rsquo;t against generics, but they have not found or seen a good proposal that allows generics in the language without significantly complicating it. Anyway, we got used to living without generics. This resulted in a slight adjustment to our way of thinking and brought to life tons of elegant solutions. But sometimes there are situations when generics are indispensable. For example, in the go-linq library methods are intended to be used with delegates of any data type, so we made them accept functions of empty interfaces. This interface has no particular behavior, hence objects with any behavior satisfy this interface and the end user of the library is responsible for doing the right type casts. Despite its good performance, this approach isn&rsquo;t use-of-wrong-data-type proof and looks clumsy. Consider the difference:</p>
+<pre><code class="language-go">From(cars).Where(func(c interface{}) bool {
+    return c.(Car).year &gt;= 2015
+}).Select(func(c interface{}) interface{} {
+    return c.(Car).owner
+})
+</code></pre>
+<p>vs</p>
+<pre><code class="language-go">From(cars).Where(func(c Car) bool {
+    return c.year &gt;= 2015
+}).Select(func(c Car) string {
+    return c.owner
+})
+</code></pre>
+<p>and it&rsquo;s getting worse depending on the complexity of your code. So, we introduced a pattern for emulating/improving generics-like methods in our library that uses the reflection mechanism internally and make your code look much easier to read and understand.</p>
+<h2 id="the-solution">The solution</h2>
+<p>The idea is to make a new method that wraps around the original one with empty interfaces and does all the casts automatically using reflection. The second part of the solution comes from the fact that the signature to the new method is <code>func (q Query) WhereT(predicateFn interface{}) Query</code> , so anything can be specified as the argument and we need a way to validate it.</p>
+<p>First, let&rsquo;s define a structure to store all the necessary data:</p>
+<pre><code class="language-go">type functionCache struct {
+	MethodName string
+	ParamName  string
+	FnValue    reflect.Value
+	FnType     reflect.Type
+	TypesIn    []reflect.Type
+	TypesOut   []reflect.Type
+}
+
+type genericFunc struct {
+	Cache *functionCache
+}
+
+func (g *genericFunc) Call(params ...interface{}) interface{} {
+ paramsIn := make([]reflect.Value, len(params))
+ for i, param := range params {
+ paramsIn[i] = reflect.ValueOf(param)
+ }
+ paramsOut := g.Cache.FnValue.Call(paramsIn)
+ if len(paramsOut) &gt;= 1 {
+ return paramsOut[0].Interface()
+ }
+ return nil
+}
+</code></pre>
+<p><code>MethodName</code> and <code>ParamName</code> are used in error handling to form a reasonable message. <code>TypesIn</code> and <code>TypesOut</code> store respectively the input and output parameters of the specified function.</p>
+<p>Secondly, we need a factory method for the &lsquo;genericFunc&rsquo;:</p>
+<pre><code class="language-go">func newGenericFunc(methodName, paramName string,
+	fn interface{},
+	validateFunc func(*functionCache) error) (*genericFunc, error) {
+
+	cache := &amp;functionCache{}
+	cache.FnValue = reflect.ValueOf(fn)
+
+	if cache.FnValue.Kind() != reflect.Func {
+		return nil,
+			fmt.Errorf(&quot;%s: parameter [%s] is not a function type. It is a '%s'&quot;,
+				methodName, paramName, cache.FnValue.Type())
+	}
+	cache.MethodName = methodName
+	cache.ParamName = paramName
+	cache.FnType = cache.FnValue.Type()
+	numTypesIn := cache.FnType.NumIn()
+	cache.TypesIn = make([]reflect.Type, numTypesIn)
+	for i := 0; i &lt; numTypesIn; i++ {
+		cache.TypesIn[i] = cache.FnType.In(i)
+	}
+
+	numTypesOut := cache.FnType.NumOut()
+	cache.TypesOut = make([]reflect.Type, numTypesOut)
+	for i := 0; i &lt; numTypesOut; i++ {
+		cache.TypesOut[i] = cache.FnType.Out(i)
+	}
+	if err := validateFunc(cache); err != nil {
+		return nil, err
+	}
+
+	return &amp;genericFunc{Cache: cache}, nil
+}
+</code></pre>
+<p>it populates the <code>genericFunc</code> structure and validates it. The validation function must be provided by the user of the method, but we have a helper to produce it:</p>
+<pre><code class="language-go">func simpleParamValidator(In []reflect.Type, Out []reflect.Type) func(cache *functionCache) error {
+	return func(cache *functionCache) error {
+		var isValid = func() bool {
+			if In != nil {
+				if len(In) != len(cache.TypesIn) {
+					return false
+				}
+				for i, paramIn := range In {
+					if paramIn != genericTp &amp;&amp; paramIn != cache.TypesIn[i] {
+						return false
+					}
+				}
+			}
+			if Out != nil {
+				if len(Out) != len(cache.TypesOut) {
+					return false
+				}
+				for i, paramOut := range Out {
+					if paramOut != genericTp &amp;&amp; paramOut != cache.TypesOut[i] {
+						return false
+					}
+				}
+			}
+			return true
+		}
+
+		if !isValid() {
+			return fmt.Errorf(
+				&quot;%s: parameter [%s] has a invalid function signature. Expected: '%s', actual: '%s'&quot;,
+				cache.MethodName,
+				cache.ParamName,
+				formatFnSignature(In, Out),
+				formatFnSignature(cache.TypesIn, cache.TypesOut))
+		}
+		return nil
+	}
+}
+</code></pre>
+<p>The last thing we need is the wrapper around the original method that does all the magic. For the above-mentioned <code>Where</code> method it is as simple as:</p>
+<pre><code class="language-go">func (q Query) WhereT(predicateFn interface{}) Query {
+
+	predicateGenericFunc, err := newGenericFunc(
+		&quot;WhereT&quot;, &quot;predicateFn&quot;, predicateFn,
+		simpleParamValidator(newElemTypeSlice(new(genericType)), newElemTypeSlice(new(bool))),
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	predicateFunc := func(item interface{}) bool {
+		return predicateGenericFunc.Call(item).(bool)
+	}
+
+	return q.Where(predicateFunc)
+}
+</code></pre>
+<p>So, you provide a function with your custom types to a new <code>WhereT</code> method and it produces a wrapper with empty interfaces that will suffice for the original method <code>Where</code>.</p>
+<h2 id="the-test">The test</h2>
+<p>If you are writing unit tests on your project and are pursuing a 100% coverage level, as we do in go-linq, then it is not an easy task to achieve with this pattern. After trying several approaches we ended up with writing several tests:</p>
+<ul>
+<li>one for the right case when everything is ok</li>
+<li>and the second that tests the validation, recovers the panic and checks the error message.</li>
+</ul>
+<pre><code class="language-go">func TestWhereT_PanicWhenPredicateFnIsInvalid(t *testing.T) {
+	mustPanicWithError(
+		t,
+		&quot;WhereT: parameter [predicateFn] has a invalid function signature. Expected: 'func(T)bool', actual: 'func(int)int'&quot;,
+		func() {
+			From([]int{1, 1, 1, 2, 1, 2, 3, 4, 2}).WhereT(func(item int) int { return item + 2 })
+		})
+}
+
+func mustPanicWithError(t *testing.T, expectedErr string, f func()) {
+	defer func() {
+		r := recover()
+		err := fmt.Sprintf(&quot;%s&quot;, r)
+		if err != expectedErr {
+			t.Fatalf(&quot;got=[%v] expected=[%v]&quot;, err, expectedErr)
+		}
+	}()
+	f()
+}
+</code></pre>
+<h2 id="the-downsides">The downsides</h2>
+<p>The first and probably the main downside of this solution is the performance penalty. Running the same scenarios that I used in one of the previous articles 
+<a href="/2016/07/16/manipulating-data-with-iterators-in-go/">Manipulating data with iterators in Go</a> we can see that this approach is around 5x-10x slower. That is why we decided to provide users with both versions of the methods leaving the original as is and calling the new ones by the <em>-T</em> naming convention.</p>
+<pre><code>BenchmarkSelectWhereFirst-4              5000000               352 ns/op
+BenchmarkSelectWhereFirst_generics-4     1000000              2094 ns/op
+BenchmarkSum-4                                50          37427788 ns/op
+BenchmarkSum_generics-4                        3         360509066 ns/op
+BenchmarkZipSkipTake-4                  10000000               224 ns/op
+BenchmarkZipSkipTake_generics-4          1000000              1265 ns/op
+</code></pre>
+<p>The second issue comes from the signature of the <em>-T method</em>, as you can see it accepts an empty interface, i.e. <code>predicateFn</code> can be literally anything.</p>
+<pre><code class="language-go">decode:true&quot;&gt;func (q Query) WhereT(predicateFn interface{}) Query
+</code></pre>
+<p>Of course, a user of the method can have problems understanding what <code>predicateFn</code> should look like, especially if he is new to the library. We conducted a long discussion to deal with the problem and ended up with the idea that the best we can do is to provide really good documentation and examples of each method (thanks 
+<a href="http://www.cleitonmarques.com/" target="_blank" rel="noopener">Cleiton</a> for being so patient and hardworking).</p>
+<h2 id="summary">Summary</h2>
+<p>Do I need generics in Go? Not really, especially with the new 
+<a href="https://blog.golang.org/generate" target="_blank" rel="noopener">go:generate</a> feature. But if you still need them, there is always a way to emulate generic behavior even though it isn&rsquo;t supported by the language, either by using empty interfaces and maintaining good performance, or with the pattern shown above making the code cleaner, more readable and free of type assertions. <strong>Note.</strong> The full source code is available in 
+<a href="https://github.com/ahmetalpbalkan/go-linq/blob/master/genericfunc.go" target="_blank" rel="noopener">genericfunc.go</a> in our repository. Please, feel free to ask any questions.</p>
+    </div>
+
+    
+
+
+
+
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tags/generics/">generics</a>
+  
+  <a class="badge badge-light" href="/tags/go-linq/">go-linq</a>
+  
+  <a class="badge badge-light" href="/tags/golang/">golang</a>
+  
+  <a class="badge badge-light" href="/tags/linq/">linq</a>
+  
+</div>
+
+
+
 <div class="share-box" aria-hidden="true">
   <ul class="share">
     
@@ -565,448 +1080,138 @@
 </div>
 
 
+
+
+
+
+
+
+
+
+
+
+  
   
 
-</div>
 
+
+
+
+  
     
+    
+    
+      
+    
+    
+    
+    <div class="media author-card content-widget-hr">
+      
+        
+        <img class="avatar mr-3 avatar-circle" src="/authors/admin/avatar_hu0582f41c68c6aa911ecb1f0dbf4a2010_40563_270x270_fill_q90_lanczos_center.jpg" alt="">
+      
 
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="btn-links mb-3">
+      <div class="media-body">
+        <h5 class="card-title"><a href="/"></a></h5>
+        <h6 class="card-subtitle">Blockchain TechLead</h6>
+        
+        <ul class="network-icon" aria-hidden="true">
   
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.linkedin.com/in/kalaninja/" target="_blank" rel="noopener">
+        <i class="fab fa-linkedin"></i>
+      </a>
+    </li>
   
-
-
-
-
-
-
-
-
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.facebook.com/kalaninja" target="_blank" rel="noopener">
+        <i class="fab fa-facebook"></i>
+      </a>
+    </li>
   
-
-
-
-
-
-
-
-
-
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/kalaninja" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
   
-  <a class="btn btn-outline-primary my-1 mr-1" href="/project/go-linq/">
-    Project
-  </a>
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://vk.com/kalan" target="_blank" rel="noopener">
+        <i class="fab fa-vk"></i>
+      </a>
+    </li>
   
-
-
-
-
-
-
-
-
-
-
-
-</div>
-
-
+    
+    
+    
+      
+    
+    
+    
+    
+    
+    <li>
+      <a href="mailto:kalansoft@gmail.com" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
   
-</div>
-
-
-
-  <div class="article-container">
-
-    <div class="article-style">
-      <p>About a month ago we welcomed a new developer to our go-linq maintainers team <a href="https://github.com/cleitonmarx" target="_blank">cleitonmarx</a> (Cleiton Marques) who introduced an interesting pattern for emulating generics in Go and became the main show-maker of the third version of the library. Here is a small story of how the generics behavior was emulated in go-linq.</p>
-
-<h2 id="the-problem">The problem</h2>
-
-<p>Being one of the most requested features in Go language for years, the question of generics has been discussed up and down and back and forth. For now it seems that they won&rsquo;t appear in the near future. In fact, the language designers aren&rsquo;t against generics, but they have not found or seen a good proposal that allows generics in the language without significantly complicating it. Anyway, we got used to living without generics. This resulted in a slight adjustment to our way of thinking and brought to life tons of elegant solutions. But sometimes there are situations when generics are indispensable. For example, in the go-linq library methods are intended to be used with delegates of any data type, so we made them accept functions of empty interfaces. This interface has no particular behavior, hence objects with any behavior satisfy this interface and the end user of the library is responsible for doing the right type casts. Despite its good performance, this approach isn&rsquo;t use-of-wrong-data-type proof and looks clumsy. Consider the difference:</p>
-
-<pre><code class="language-go">From(cars).Where(func(c interface{}) bool {
-    return c.(Car).year &gt;= 2015
-}).Select(func(c interface{}) interface{} {
-    return c.(Car).owner
-})
-</code></pre>
-
-<p>vs</p>
-
-<pre><code class="language-go">From(cars).Where(func(c Car) bool {
-    return c.year &gt;= 2015
-}).Select(func(c Car) string {
-    return c.owner
-})
-</code></pre>
-
-<p>and it&rsquo;s getting worse depending on the complexity of your code. So, we introduced a pattern for emulating/improving generics-like methods in our library that uses the reflection mechanism internally and make your code look much easier to read and understand.</p>
-
-<h2 id="the-solution">The solution</h2>
-
-<p>The idea is to make a new method that wraps around the original one with empty interfaces and does all the casts automatically using reflection. The second part of the solution comes from the fact that the signature to the new method is <code>func (q Query) WhereT(predicateFn interface{}) Query</code> , so anything can be specified as the argument and we need a way to validate it.</p>
-
-<p>First, let&rsquo;s define a structure to store all the necessary data:</p>
-
-<pre><code class="language-go">type functionCache struct {
-	MethodName string
-	ParamName  string
-	FnValue    reflect.Value
-	FnType     reflect.Type
-	TypesIn    []reflect.Type
-	TypesOut   []reflect.Type
-}
-
-type genericFunc struct {
-	Cache *functionCache
-}
-
-func (g *genericFunc) Call(params ...interface{}) interface{} {
- paramsIn := make([]reflect.Value, len(params))
- for i, param := range params {
- paramsIn[i] = reflect.ValueOf(param)
- }
- paramsOut := g.Cache.FnValue.Call(paramsIn)
- if len(paramsOut) &gt;= 1 {
- return paramsOut[0].Interface()
- }
- return nil
-}
-</code></pre>
-
-<p><code>MethodName</code> and <code>ParamName</code> are used in error handling to form a reasonable message. <code>TypesIn</code> and <code>TypesOut</code> store respectively the input and output parameters of the specified function.</p>
-
-<p>Secondly, we need a factory method for the &lsquo;genericFunc&rsquo;:</p>
-
-<pre><code class="language-go">func newGenericFunc(methodName, paramName string,
-	fn interface{},
-	validateFunc func(*functionCache) error) (*genericFunc, error) {
-
-	cache := &amp;functionCache{}
-	cache.FnValue = reflect.ValueOf(fn)
-
-	if cache.FnValue.Kind() != reflect.Func {
-		return nil,
-			fmt.Errorf(&quot;%s: parameter [%s] is not a function type. It is a '%s'&quot;,
-				methodName, paramName, cache.FnValue.Type())
-	}
-	cache.MethodName = methodName
-	cache.ParamName = paramName
-	cache.FnType = cache.FnValue.Type()
-	numTypesIn := cache.FnType.NumIn()
-	cache.TypesIn = make([]reflect.Type, numTypesIn)
-	for i := 0; i &lt; numTypesIn; i++ {
-		cache.TypesIn[i] = cache.FnType.In(i)
-	}
-
-	numTypesOut := cache.FnType.NumOut()
-	cache.TypesOut = make([]reflect.Type, numTypesOut)
-	for i := 0; i &lt; numTypesOut; i++ {
-		cache.TypesOut[i] = cache.FnType.Out(i)
-	}
-	if err := validateFunc(cache); err != nil {
-		return nil, err
-	}
-
-	return &amp;genericFunc{Cache: cache}, nil
-}
-</code></pre>
-
-<p>it populates the <code>genericFunc</code> structure and validates it. The validation function must be provided by the user of the method, but we have a helper to produce it:</p>
-
-<pre><code class="language-go">func simpleParamValidator(In []reflect.Type, Out []reflect.Type) func(cache *functionCache) error {
-	return func(cache *functionCache) error {
-		var isValid = func() bool {
-			if In != nil {
-				if len(In) != len(cache.TypesIn) {
-					return false
-				}
-				for i, paramIn := range In {
-					if paramIn != genericTp &amp;&amp; paramIn != cache.TypesIn[i] {
-						return false
-					}
-				}
-			}
-			if Out != nil {
-				if len(Out) != len(cache.TypesOut) {
-					return false
-				}
-				for i, paramOut := range Out {
-					if paramOut != genericTp &amp;&amp; paramOut != cache.TypesOut[i] {
-						return false
-					}
-				}
-			}
-			return true
-		}
-
-		if !isValid() {
-			return fmt.Errorf(
-				&quot;%s: parameter [%s] has a invalid function signature. Expected: '%s', actual: '%s'&quot;,
-				cache.MethodName,
-				cache.ParamName,
-				formatFnSignature(In, Out),
-				formatFnSignature(cache.TypesIn, cache.TypesOut))
-		}
-		return nil
-	}
-}
-</code></pre>
-
-<p>The last thing we need is the wrapper around the original method that does all the magic. For the above-mentioned <code>Where</code> method it is as simple as:</p>
-
-<pre><code class="language-go">func (q Query) WhereT(predicateFn interface{}) Query {
-
-	predicateGenericFunc, err := newGenericFunc(
-		&quot;WhereT&quot;, &quot;predicateFn&quot;, predicateFn,
-		simpleParamValidator(newElemTypeSlice(new(genericType)), newElemTypeSlice(new(bool))),
-	)
-	if err != nil {
-		panic(err)
-	}
-
-	predicateFunc := func(item interface{}) bool {
-		return predicateGenericFunc.Call(item).(bool)
-	}
-
-	return q.Where(predicateFunc)
-}
-</code></pre>
-
-<p>So, you provide a function with your custom types to a new <code>WhereT</code> method and it produces a wrapper with empty interfaces that will suffice for the original method <code>Where</code>.</p>
-
-<h2 id="the-test">The test</h2>
-
-<p>If you are writing unit tests on your project and are pursuing a 100% coverage level, as we do in go-linq, then it is not an easy task to achieve with this pattern. After trying several approaches we ended up with writing several tests:</p>
-
-<ul>
-<li>one for the right case when everything is ok</li>
-
-<li><p>and the second that tests the validation, recovers the panic and checks the error message.</p>
-
-<pre><code class="language-go">func TestWhereT_PanicWhenPredicateFnIsInvalid(t *testing.T) {
-	mustPanicWithError(
-		t,
-		&quot;WhereT: parameter [predicateFn] has a invalid function signature. Expected: 'func(T)bool', actual: 'func(int)int'&quot;,
-		func() {
-			From([]int{1, 1, 1, 2, 1, 2, 3, 4, 2}).WhereT(func(item int) int { return item + 2 })
-		})
-}
-
-func mustPanicWithError(t *testing.T, expectedErr string, f func()) {
-	defer func() {
-		r := recover()
-		err := fmt.Sprintf(&quot;%s&quot;, r)
-		if err != expectedErr {
-			t.Fatalf(&quot;got=[%v] expected=[%v]&quot;, err, expectedErr)
-		}
-	}()
-	f()
-}
-</code></pre></li>
 </ul>
 
-<h2 id="the-downsides">The downsides</h2>
-
-<p>The first and probably the main downside of this solution is the performance penalty. Running the same scenarios that I used in one of the previous articles <a href="/2016/07/16/manipulating-data-with-iterators-in-go/">Manipulating data with iterators in Go</a> we can see that this approach is around 5x-10x slower. That is why we decided to provide users with both versions of the methods leaving the original as is and calling the new ones by the <em>-T</em> naming convention.</p>
-
-<pre><code>BenchmarkSelectWhereFirst-4              5000000               352 ns/op
-BenchmarkSelectWhereFirst_generics-4     1000000              2094 ns/op
-BenchmarkSum-4                                50          37427788 ns/op
-BenchmarkSum_generics-4                        3         360509066 ns/op
-BenchmarkZipSkipTake-4                  10000000               224 ns/op
-BenchmarkZipSkipTake_generics-4          1000000              1265 ns/op
-</code></pre>
-
-<p>The second issue comes from the signature of the <em>-T method</em>, as you can see it accepts an empty interface, i.e. <code>predicateFn</code> can be literally anything.</p>
-
-<pre><code class="language-go">decode:true&quot;&gt;func (q Query) WhereT(predicateFn interface{}) Query
-</code></pre>
-
-<p>Of course, a user of the method can have problems understanding what <code>predicateFn</code> should look like, especially if he is new to the library. We conducted a long discussion to deal with the problem and ended up with the idea that the best we can do is to provide really good documentation and examples of each method (thanks <a href="http://www.cleitonmarques.com/" target="_blank">Cleiton</a> for being so patient and hardworking).</p>
-
-<h2 id="summary">Summary</h2>
-
-<p>Do I need generics in Go? Not really, especially with the new <a href="https://blog.golang.org/generate" target="_blank">go:generate</a> feature. But if you still need them, there is always a way to emulate generic behavior even though it isn&rsquo;t supported by the language, either by using empty interfaces and maintaining good performance, or with the pattern shown above making the code cleaner, more readable and free of type assertions. <strong>Note.</strong> The full source code is available in <a href="https://github.com/ahmetalpbalkan/go-linq/blob/master/genericfunc.go" target="_blank">genericfunc.go</a> in our repository. Please, feel free to ask any questions.</p>
-    </div>
-
-    
-
-
-    
-
-<div class="article-tags">
-  
-  <a class="badge badge-light" href="/tags/generics/">generics</a>
-  
-  <a class="badge badge-light" href="/tags/go-linq/">go-linq</a>
-  
-  <a class="badge badge-light" href="/tags/golang/">golang</a>
-  
-  <a class="badge badge-light" href="/tags/linq/">linq</a>
-  
-</div>
-
-
-
-    
-      
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-  
-  
-  
-    
-  
-  
-  <div class="media author-card">
-    
-      
-      <img class="portrait mr-3" src="/authors/admin/avatar_hu0582f41c68c6aa911ecb1f0dbf4a2010_40563_250x250_fill_q90_lanczos_center.jpg" alt="Avatar">
-    
-
-    <div class="media-body">
-      <h5 class="card-title"><a href="/">Alexander Kalankhodzhaev</a></h5>
-      <h6 class="card-subtitle">Blockchain TechLead</h6>
-      
-      <ul class="network-icon" aria-hidden="true">
-        
-          
-          
-          
-            
-          
-          
-          
-          
-          
-            
-          
-          <li>
-            <a href="https://www.linkedin.com/in/kalaninja/" target="_blank" rel="noopener">
-              <i class="fab fa-linkedin"></i>
-            </a>
-          </li>
-        
-          
-          
-          
-            
-          
-          
-          
-          
-          
-            
-          
-          <li>
-            <a href="https://www.facebook.com/kalaninja" target="_blank" rel="noopener">
-              <i class="fab fa-facebook"></i>
-            </a>
-          </li>
-        
-          
-          
-          
-            
-          
-          
-          
-          
-          
-            
-          
-          <li>
-            <a href="https://github.com/kalaninja" target="_blank" rel="noopener">
-              <i class="fab fa-github"></i>
-            </a>
-          </li>
-        
-          
-          
-          
-            
-          
-          
-          
-          
-          
-            
-          
-          <li>
-            <a href="https://vk.com/kalan" target="_blank" rel="noopener">
-              <i class="fab fa-vk"></i>
-            </a>
-          </li>
-        
-          
-          
-          
-            
-          
-          
-          
-          
-          
-          <li>
-            <a href="mailto:kalansoft@gmail.com" >
-              <i class="fas fa-envelope"></i>
-            </a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-
-
-      
-      
-      <div class="article-widget">
-        <div class="hr-light"></div>
-        <h3>Related</h3>
-        <ul>
-          
-          <li><a href="/post/manipulating-data-with-iterators-in-go/">Manipulating Data With Iterators in Go</a></li>
-          
-          <li><a href="/post/how-to-copy-tags-from-one-git-repository-to-another/">How to copy tags from one git repository to another</a></li>
-          
-          <li><a href="/post/announcement-go2linq-is-now-in-the-go-linq-repository/">Announcement: go2linq is now in the go-linq repository</a></li>
-          
-        </ul>
       </div>
-      
-    
+    </div>
+  
 
-    
 
-    
+
+
+
+
+
 <section id="comments">
   
     
@@ -1037,6 +1242,13 @@ BenchmarkZipSkipTake_generics-4          1000000              1265 ns/op
 
 
 
+
+
+
+
+
+
+
   </div>
 </article>
 
@@ -1044,55 +1256,52 @@ BenchmarkZipSkipTake_generics-4          1000000              1265 ns/op
 
     
     
-
     
-    
-    
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/instant.page/5.1.0/instantpage.min.js" integrity="sha512-1+qUtKoh9XZW7j+6LhRMAyOrgSQKenQ4mluTR+cvxXjP1Z54RxZuzstR/H9kgPXQsVB8IW7DMDFUJpzLjvhGSQ==" crossorigin="anonymous"></script>
 
       
 
       
         
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js" integrity="sha256-aYTdUrn6Ow1DDgh5JTc3aDGnnju48y/1c8s1dgkYPQ8=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/highlight.min.js" integrity="sha512-7t8APmYpzEsZP7CYoA7RfMPV9Bb+PJHa9x2WiUnDXZx3XHveuyWUtvNOexhkierl5flZ3tr92dP1mMS+SGlD+A==" crossorigin="anonymous"></script>
         
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/languages/r.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/r.min.js"></script>
         
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/languages/go.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/languages/go.min.js"></script>
         
       
 
-      
-      
     
 
     
     
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.2.0/leaflet.js" integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.5.1/leaflet.js" integrity="sha256-EErZamuLefUnbMBQbsEqu1USa+btR2oIlCpBJbyD4/g=" crossorigin="anonymous"></script>
     
 
     
     
-    <script>hljs.initHighlightingOnLoad();</script>
+    <script>const code_highlighting = true;</script>
     
 
+    
+    
+    
+    
     
     
     <script>
-      const search_index_filename = "/index.json";
-      const i18n = {
-        'placeholder': "Search...",
-        'results': "results found",
-        'no_results': "No results found"
-      };
+      const search_config = {"indexURI":"/index.json","minLength":1,"threshold":0.3};
+      const i18n = {"no_results":"No results found","placeholder":"Search...","results":"results found"};
       const content_type = {
         'post': "Posts",
         'project': "Projects",
         'publication' : "Publications",
-        'talk' : "Talks"
+        'talk' : "Talks",
+        'slides' : "Slides"
         };
     </script>
     
@@ -1126,6 +1335,12 @@ BenchmarkZipSkipTake_generics-4          1000000              1265 ns/op
 
     
     
+
+    
+    
+
+    
+    
     <script id="dsq-count-scr" src="https://kalan-blog.disqus.com/count.js" async></script>
     
 
@@ -1143,7 +1358,7 @@ BenchmarkZipSkipTake_generics-4          1000000              1265 ns/op
     
     
     
-    <script src="/js/academic.min.130521ecfc6f534c52c158217bbff718.js"></script>
+    <script src="/js/academic.min.3b2b658c61ebd725bd5fc606c89fe44c.js"></script>
 
     
 
@@ -1152,21 +1367,33 @@ BenchmarkZipSkipTake_generics-4          1000000              1265 ns/op
 
 
 
+  
   
   <div class="container">
     <footer class="site-footer">
   
 
   <p class="powered-by">
-    &copy; 2019 Alexander Kalankhodzhaev &middot; 
+    © 2020 Alexander Kalankhodzhaev
+  </p>
 
-    Powered by the
-    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
-    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+  
+  
+
+
+
+
+
+
+  <p class="powered-by">
+    
+    Published with
+    <a href="https://wowchemy.com" target="_blank" rel="noopener">Wowchemy Website Builder</a>
+    
 
     
     <span class="float-right" aria-hidden="true">
-      <a href="#" id="back_to_top">
+      <a href="#" class="back-to-top">
         <span class="button_icon">
           <i class="fas fa-chevron-up fa-2x"></i>
         </span>
